@@ -107,6 +107,9 @@
         }
       }
     },
+    "Today's Habits" : {
+
+    },
     "Tues" : {
       "extractionState" : "manual",
       "localizations" : {
