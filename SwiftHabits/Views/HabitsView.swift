@@ -13,7 +13,6 @@ import SwiftUI
 
 struct HabitsView: View {
     @ObservedObject var viewModel = WeekdayPickerViewModel()
-    
     let habits = [
         ("Walking", "Repeat everyday", "11:00 pm", 0.7),
         ("Reading", "20 pages a day", "9:00 pm", 0.5),
@@ -22,103 +21,145 @@ struct HabitsView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            
             HStack(spacing: 8) {
                 ForEach(Array(zip(viewModel.days.indices, viewModel.days)), id: \.0) { index, day in
-                    Button(action: {
+                    DayButtonView(day: day, date: viewModel.weekDates[index], isSelected: viewModel.selectedDayIndex == index, action: {
                         viewModel.selectedDayIndex = index
-                    }) {
-                        VStack {
-                            Text(LocalizedStringKey(day))
-                                .font(.system(size: 16, weight: .medium))
-                                .foregroundColor(viewModel.selectedDayIndex == index ? .white : .primary)
-                            Text(viewModel.weekDates[index])
-                                .font(.system(size: 14))
-                                .foregroundColor(viewModel.selectedDayIndex == index ? .white : .secondary)
-                        }
-                        .frame(minWidth: 44, minHeight: 60)
-                        .padding(.vertical, 8)
-                        .background(viewModel.selectedDayIndex == index ? Color.blue : Color.clear)
-                        .cornerRadius(8)
-                    }
+                    })
                 }
             }
             .padding(.horizontal)
-            ZStack(alignment: .top) {
-                            // CardView
-                            VStack(alignment: .trailing, spacing: 10) {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text("Your Daily Goal Almost Done")
-                                        .font(.headline)
-                                    Text("10 of 15 completed")
-                                        .font(.subheadline)
-                                }
-                                VStack(spacing: 0) {
-                                    HStack {
-                                        Spacer()
-                                        ProgressView(value: 80, total: 100)
-                                            .progressViewStyle(LinearProgressViewStyle())
-                                            .frame(width: 230, height: 20)
-                                    }
-                                    HStack {
-                                        Spacer()
-                                        Text("80%")
-                                            .font(.caption)
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 10)
-                            .background(Color.white)
-                            .cornerRadius(15)
-                            .shadow(radius: 5)
-                            .frame(width: 350, height: 80)
+            Spacer()
 
-                            Image("icon_bear")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .offset(x: -120)
-                                .offset(y: -50)
-                        }
-                        .padding(.top, 20)
+            GoalCardView()
 
             VStack(alignment: .leading, spacing: 10) {
-                Text("Today's Habits")
-                    .font(.system(size: 14, weight: .bold))
-                    .padding(.leading, 20)
-                    .padding(.top, 5)
-
+                HeaderTitleView(title: "Today's Habits", paddingLeading: 20, paddingTop: 5)
+                
                 List(habits, id: \.0) { habit in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(habit.0)
-                                .font(.headline)
-                            Text(habit.1)
-                                .font(.subheadline)
-                            Text(habit.2)
-                                .font(.footnote)
-                        }
-                        .padding(.leading, 20)
-
-                        Spacer()
-
-                        ProgressView(value: habit.3, total: 1.0)
-                            .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
-                            .frame(width: 50, height: 50)
-                            .padding(.trailing, 40)
-                    }
-                    .frame(height: 100)
-                    .background(Color.white)
-                    .cornerRadius(15)
-                    .shadow(radius: 5)
+                    HabitCardView(habit: habit)
                 }
                 .listStyle(PlainListStyle())
             }
             .padding(.horizontal, 10)
-                    }
-                    Spacer()
+        }
+        Spacer()
+        
+        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+            Text("Add new habit")
+                .padding()
+        })
+        .background(Color.blue)
+        .cornerRadius(15)
+        .foregroundColor(.white)
+        .padding()
+    }
+}
+
+struct HeaderTitleView: View {
+    var title: String
+    var paddingLeading: CGFloat
+    var paddingTop: CGFloat
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 14, weight: .bold))
+            .padding(.leading, paddingLeading)
+            .padding(.top, paddingTop)
+    }
+}
+
+struct GoalCardView: View {
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            VStack(alignment: .trailing, spacing: 10) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Your Daily Goal Almost Done")
+                        .font(.headline)
+                    Text("10 of 15 completed")
+                        .font(.subheadline)
+                }
+                // Använd en VStack för att gruppera progressbaren och procenttexten
+                VStack(alignment: .trailing, spacing: 0) {  // Använd .trailing för att justera till höger
+                    ProgressView(value: 80, total: 100)
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .frame(width: 300, height: 20)
+                    Text("80%")
+                        .font(.caption)
                 }
             }
+            .padding(.horizontal, 20) // Lägg till padding på sidorna för att ge mer utrymme
+            .padding(.vertical, 10)
+            .background(Color.white)
+            .cornerRadius(15)
+            .shadow(radius: 5)
+            .frame(width: 350, height: 80)
+
+            Image("icon_bear")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .offset(y: -50)  // Justerad för att placeras ovanför kortet
+        }
+        .padding(.top, 20)
+    }
+}
+
+
+
+
+struct HabitCardView: View {
+    var habit: (String, String, String, Double)
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(habit.0)
+                    .font(.headline)
+                Text(habit.1)
+                    .font(.subheadline)
+                Text(habit.2)
+                    .font(.footnote)
+            }
+            .padding(.leading, 20)
+
+            Spacer()
+
+            ProgressView(value: habit.3, total: 1.0)
+                .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
+                .frame(width: 50, height: 50)
+                .padding(.trailing, 40)
+        }
+        .frame(height: 80)
+        .background(Color.white)
+        .cornerRadius(15)
+        .shadow(radius: 5)
+    }
+}
+
+struct DayButtonView: View {
+    var day: String
+    var date: String
+    var isSelected: Bool
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack {
+                Text(LocalizedStringKey(day))
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(isSelected ? .white : .primary)
+                Text(date)
+                    .font(.system(size: 14))
+                    .foregroundColor(isSelected ? .white : .secondary)
+            }
+            .frame(minWidth: 44, minHeight: 60)
+            .padding(.vertical, 8)
+            .background(isSelected ? Color.blue : Color.clear)
+            .cornerRadius(8)
+        }
+    }
+}
 
 struct CircularProgressBarStyle: ProgressViewStyle {
     var trackColor: Color
