@@ -1,5 +1,27 @@
 {
   "sourceLanguage" : "en",
-  "strings" : {},
+  "strings" : {
+    "Habits" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vanor"
+          }
+        }
+      }
+    },
+    "Progress" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Framsteg"
+          }
+        }
+      }
+    }
+  },
   "version" : "1.0"
 }

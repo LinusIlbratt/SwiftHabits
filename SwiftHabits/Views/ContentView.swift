@@ -15,7 +15,7 @@ struct ContentView: View {
                 // view
             }
             .tabItem {
-                Label("Habits", systemImage: "arrow.3.trianglepath")
+                Label(LocalizedStringKey("Habits"), systemImage: "arrow.3.trianglepath")
             }
 
             
