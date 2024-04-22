@@ -4,6 +4,12 @@
     "Fri" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fri"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26,6 +32,12 @@
     "Mon" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mon"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47,6 +59,12 @@
     "Sat" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sat"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -58,6 +76,12 @@
     "Sun" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sun"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -69,6 +93,12 @@
     "Thur" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thur"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -80,6 +110,12 @@
     "Tues" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tues"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -91,6 +127,12 @@
     "Wed" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wed"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",

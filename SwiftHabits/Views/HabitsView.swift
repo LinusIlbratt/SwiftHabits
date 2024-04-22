@@ -17,7 +17,7 @@ struct HabitsView: View {
                         viewModel.selectedDayIndex = index
                     }) {
                         VStack {
-                            Text(day)
+                            Text(LocalizedStringKey(day))
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(viewModel.selectedDayIndex == index ? .white : .primary)
                             Text(viewModel.weekDates[index])
