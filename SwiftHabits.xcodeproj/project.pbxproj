@@ -17,6 +17,7 @@
 		1B1EA05E2BD660A700D202CE /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */; };
 		1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0612BD6697700D202CE /* HabitsView.swift */; };
 		1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */; };
+		1B1EA0662BD6796700D202CE /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0652BD6796700D202CE /* DateManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		1B1EA0612BD6697700D202CE /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdayPickerViewModel.swift; sourceTree = "<group>"; };
+		1B1EA0652BD6796700D202CE /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 		1B1EA0522BD645F200D202CE /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1B1EA0652BD6796700D202CE /* DateManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B1EA0292BD645BA00D202CE /* ContentView.swift in Sources */,
+				1B1EA0662BD6796700D202CE /* DateManager.swift in Sources */,
 				1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */,
 				1B1EA0272BD645BA00D202CE /* SwiftHabitsApp.swift in Sources */,
 				1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */,

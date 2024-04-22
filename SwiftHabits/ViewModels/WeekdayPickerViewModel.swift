@@ -6,37 +6,54 @@
 //
 
 import Foundation
-
-import Foundation
+import Combine
+import UIKit
 
 class WeekdayPickerViewModel: ObservableObject {
     @Published var selectedDayIndex = 0
+    private var dateManager = DateManager()
+    private var cancellables = Set<AnyCancellable>()
+
     let days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"]
     
-    private let dateFormatter: DateFormatter
-    
-    // Compute the dates for the current week starting from Monday
+    // computed property returing a list of this weeks dates using dateManager.
     var weekDates: [String] {
-        var dates = [String]()
-        let calendar = Calendar.current
-        let today = Date()
-        let weekday = calendar.component(.weekday, from: today)
-        let startOfWeek = calendar.date(byAdding: .day, value: 2 - weekday, to: today)!
-
-        for i in 0..<7 {
-            if let dateToAdd = calendar.date(byAdding: .day, value: i, to: startOfWeek) {
-                dates.append(dateFormatter.string(from: dateToAdd))
-            }
-        }
-        return dates
+        dateManager.weekDates(startingFrom: Date())
     }
     
+    
     init() {
-        dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d" // Only day of the month
+        selectedDayIndex = dateManager.getDayIndex(for: Date()) // sets selectedDayIndex to current day using dateManager
+        observeTimeChanges()
+    }
+    
+    // subscribes to system notifications for significant time changes, such as the start of a new day
+    private func observeTimeChanges() {
+        NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateSelectedDayIndex()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateSelectedDayIndex() {
+        let newDayIndex = dateManager.getDayIndex(for: Date())
+        DispatchQueue.main.async {
+            self.selectedDayIndex = newDayIndex
+        }
+    }
+    
+    // cancels all active subscriptions on deinitialization.
+    deinit {
+        for cancellable in cancellables {
+            cancellable.cancel()
+        }
     }
 }
 
+// computed property to get the start of the current day.
+// returns the date set to midnight according to the current calendar and timezone.
 extension Date {
     var startOfDay: Date {
         Calendar.current.startOfDay(for: self)
