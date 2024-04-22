@@ -14,7 +14,7 @@
 		1B1EA0382BD645BB00D202CE /* SwiftHabitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0372BD645BB00D202CE /* SwiftHabitsTests.swift */; };
 		1B1EA0422BD645BB00D202CE /* SwiftHabitsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0412BD645BB00D202CE /* SwiftHabitsUITests.swift */; };
 		1B1EA0442BD645BB00D202CE /* SwiftHabitsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0432BD645BB00D202CE /* SwiftHabitsUITestsLaunchTests.swift */; };
-		1B1EA0582BD6464800D202CE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA05A2BD6464800D202CE /* Localizable.strings */; };
+		1B1EA05E2BD660A700D202CE /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,8 +45,7 @@
 		1B1EA03D2BD645BB00D202CE /* SwiftHabitsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftHabitsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B1EA0412BD645BB00D202CE /* SwiftHabitsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHabitsUITests.swift; sourceTree = "<group>"; };
 		1B1EA0432BD645BB00D202CE /* SwiftHabitsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHabitsUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		1B1EA0592BD6464800D202CE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		1B1EA05B2BD6476600D202CE /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,7 +173,7 @@
 		1B1EA0552BD6460700D202CE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1B1EA05A2BD6464800D202CE /* Localizable.strings */,
+				1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -285,8 +284,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B1EA02E2BD645BA00D202CE /* Preview Assets.xcassets in Resources */,
-				1B1EA0582BD6464800D202CE /* Localizable.strings in Resources */,
 				1B1EA02B2BD645BA00D202CE /* Assets.xcassets in Resources */,
+				1B1EA05E2BD660A700D202CE /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,18 +346,6 @@
 			targetProxy = 1B1EA03E2BD645BB00D202CE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		1B1EA05A2BD6464800D202CE /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1B1EA0592BD6464800D202CE /* en */,
-				1B1EA05B2BD6476600D202CE /* sv */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1B1EA0452BD645BB00D202CE /* Debug */ = {
