@@ -16,6 +16,7 @@
 		1B1EA0442BD645BB00D202CE /* SwiftHabitsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0432BD645BB00D202CE /* SwiftHabitsUITestsLaunchTests.swift */; };
 		1B1EA05E2BD660A700D202CE /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */; };
 		1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0612BD6697700D202CE /* HabitsView.swift */; };
+		1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		1B1EA0432BD645BB00D202CE /* SwiftHabitsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHabitsUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		1B1EA0612BD6697700D202CE /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
+		1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdayPickerViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +150,7 @@
 		1B1EA0512BD645EB00D202CE /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				1B1EA0292BD645BA00D202CE /* ContentView.swift in Sources */,
 				1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */,
 				1B1EA0272BD645BA00D202CE /* SwiftHabitsApp.swift in Sources */,
+				1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,7 @@ struct ContentView: View {
         TabView {
             
             NavigationStack {
-                // view
+                HabitsView()
             }
             .tabItem {
                 Label(LocalizedStringKey("Habits"), systemImage: "arrow.3.trianglepath")
