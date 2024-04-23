@@ -14,9 +14,15 @@ class HabitViewModel: ObservableObject {
     @Published var selectedIcon: String = ""   // Default icon name
     @Published var frequency: String = "Daily" // Default frequency value
     @Published var clockReminder: String = ""
+    @Published var streakCount: Int = 0
+
+    
+    init() {
+            loadInitialData()
+        }
 
     func addHabit() {
-        let newHabit = Habit(name: habitName, iconName: selectedIcon, frequency: frequency, clockReminder: clockReminder)
+        let newHabit = Habit(name: habitName, iconName: selectedIcon, frequency: frequency, clockReminder: clockReminder, streakCount: streakCount)
         habits.append(newHabit)
         resetFields()
     }
@@ -28,4 +34,14 @@ class HabitViewModel: ObservableObject {
         frequency = "Daily" // Reset frequency to default
         clockReminder = ""
     }
+    
+    private func loadInitialData() {
+            
+            let sampleHabits = [
+                Habit(name: "Go for a walk", iconName: "figure.walk", frequency: "Daily", clockReminder: "08:00 AM", progress: 0.5, streakCount: 3),
+                Habit(name: "Read a book", iconName: "book.closed", frequency: "Weekly", clockReminder: "21:00 PM", progress: 0.3, streakCount: 2),
+                Habit(name: "Meditation", iconName: "moon.zzz", frequency: "Daily", clockReminder: "07:00 AM", progress: 0.7, streakCount: 3)
+            ]
+            habits.append(contentsOf: sampleHabits)
+        }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HabitsView: View {
-    @ObservedObject var habitViewModel: HabitViewModel
+    @StateObject var habitViewModel: HabitViewModel
     @ObservedObject var weekdayPickerViewModel: WeekdayPickerViewModel
     @State private var showingNewHabit = false
     
@@ -116,6 +116,13 @@ struct HabitCardView: View {
             }
             Spacer()
             
+            if habit.streakCount >= 4 {
+                Image(systemName: "flame.fill")
+                    .font(.title2)
+                    .foregroundColor(.red)
+                    .padding(.trailing, 10)
+            }
+            
             ProgressView(value: habit.progress, total: 1.0)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
@@ -127,6 +134,7 @@ struct HabitCardView: View {
         .onTapGesture {
             withAnimation {
                 habit.progress = 1.0
+                habit.streakCount += 1
             }
         }
     }
