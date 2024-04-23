@@ -18,6 +18,7 @@
 		1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0612BD6697700D202CE /* HabitsView.swift */; };
 		1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */; };
 		1B1EA0662BD6796700D202CE /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0652BD6796700D202CE /* DateManager.swift */; };
+		1BE408B32BD774CF00AA212B /* NewHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B22BD774CF00AA212B /* NewHabitView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		1B1EA0612BD6697700D202CE /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdayPickerViewModel.swift; sourceTree = "<group>"; };
 		1B1EA0652BD6796700D202CE /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
+		1BE408B22BD774CF00AA212B /* NewHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 			children = (
 				1B1EA0282BD645BA00D202CE /* ContentView.swift */,
 				1B1EA0612BD6697700D202CE /* HabitsView.swift */,
+				1BE408B22BD774CF00AA212B /* NewHabitView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BE408B32BD774CF00AA212B /* NewHabitView.swift in Sources */,
 				1B1EA0292BD645BA00D202CE /* ContentView.swift in Sources */,
 				1B1EA0662BD6796700D202CE /* DateManager.swift in Sources */,
 				1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */,

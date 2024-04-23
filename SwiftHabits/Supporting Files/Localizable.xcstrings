@@ -11,6 +11,9 @@
         }
       }
     },
+    "+ New habit" : {
+
+    },
     "10 of 15 completed" : {
       "localizations" : {
         "sv" : {
@@ -31,7 +34,11 @@
         }
       }
     },
+    "Add Habit" : {
+
+    },
     "Add new habit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "sv" : {
           "stringUnit" : {
@@ -40,6 +47,9 @@
           }
         }
       }
+    },
+    "Add New Habit" : {
+
     },
     "Fri" : {
       "extractionState" : "manual",
@@ -68,6 +78,9 @@
           }
         }
       }
+    },
+    "Lägg till ny vana här." : {
+
     },
     "Mon" : {
       "extractionState" : "manual",

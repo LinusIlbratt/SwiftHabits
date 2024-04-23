@@ -13,6 +13,7 @@ import SwiftUI
 
 struct HabitsView: View {
     @ObservedObject var viewModel = WeekdayPickerViewModel()
+    @State private var showingNewHabit = false
     
     let habits = [
         ("Walking", "Repeat everyday", "11:00 pm", 0.7),
@@ -47,13 +48,18 @@ struct HabitsView: View {
         }
         Spacer()
         
-        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+        Button(action: {
+            showingNewHabit = true
+        }, label: {
             Text("+ New habit")
                 .padding()
         })
         .background(Color.blue)
         .cornerRadius(15)
         .foregroundColor(.white)
+        .fullScreenCover(isPresented: $showingNewHabit) {
+                        NewHabitView(isPresented: $showingNewHabit)
+                    }
         Spacer()
     }
 }
