@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var habitViewModel = HabitViewModel()
+    @StateObject var weekdayPickerViewModel = WeekdayPickerViewModel()
+    
     var body: some View {
         TabView {
             
             NavigationStack {
-                HabitsView()
+                HabitsView(habitViewModel: habitViewModel, weekdayPickerViewModel: weekdayPickerViewModel)
             }
             .tabItem {
                 Label(LocalizedStringKey("Habits"), systemImage: "arrow.3.trianglepath")

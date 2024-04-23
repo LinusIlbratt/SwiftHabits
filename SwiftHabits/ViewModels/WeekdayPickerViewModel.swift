@@ -16,18 +16,18 @@ class WeekdayPickerViewModel: ObservableObject {
 
     let days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"]
     
-    // computed property returing a list of this weeks dates using dateManager.
+    // Computed property returning a list of this week's dates using dateManager.
     var weekDates: [String] {
         dateManager.weekDates(startingFrom: Date())
     }
     
     
     init() {
-        selectedDayIndex = dateManager.getDayIndex(for: Date()) // sets selectedDayIndex to current day using dateManager
+        selectedDayIndex = dateManager.getDayIndex(for: Date()) // Sets selectedDayIndex to current day using dateManager
         observeTimeChanges()
     }
     
-    // subscribes to system notifications for significant time changes, such as the start of a new day
+    // Subscribes to system notifications for significant time changes, such as the start of a new day
     private func observeTimeChanges() {
         NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)
             .receive(on: RunLoop.main)
@@ -44,7 +44,7 @@ class WeekdayPickerViewModel: ObservableObject {
         }
     }
     
-    // cancels all active subscriptions on deinitialization.
+    // Cancels all active subscriptions on deinitialization.
     deinit {
         for cancellable in cancellables {
             cancellable.cancel()
@@ -52,8 +52,8 @@ class WeekdayPickerViewModel: ObservableObject {
     }
 }
 
-// computed property to get the start of the current day.
-// returns the date set to midnight according to the current calendar and timezone.
+// Computed property to get the start of the current day.
+// Returns the date set to midnight according to the current calendar and timezone.
 extension Date {
     var startOfDay: Date {
         Calendar.current.startOfDay(for: self)

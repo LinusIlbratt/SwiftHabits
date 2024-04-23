@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct NewHabitView: View {
+    @ObservedObject var viewModel: HabitViewModel
     @Binding var isPresented: Bool
-    @State private var habitName = ""
     @State private var specificTime = ""
     @State private var selectedIcon = ""
     @State private var frequency = "Daily"
@@ -25,9 +25,7 @@ struct NewHabitView: View {
     
     let days = ["M", "T", "W", "T", "F", "S", "S"]
     
-    
     var body: some View {
-        
         NavigationView {
             VStack(alignment: .leading) {
                 Text("Habit title")
@@ -35,7 +33,7 @@ struct NewHabitView: View {
                     .padding(.top, 20)
                     .padding(.leading, 20)
                 
-                TextField("Enter habit name", text: $habitName)
+                TextField("Enter habit name", text: $viewModel.habitName)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
                     .background(RoundedRectangle(cornerRadius: 25).fill(Color.gray.opacity(0.2)))
@@ -139,6 +137,7 @@ struct NewHabitView: View {
                 Spacer()
                 
                 Button("Add habit") {
+                    viewModel.addHabit()
                     isPresented = false
                 }
                 .padding()
@@ -156,7 +155,10 @@ struct NewHabitView: View {
 
 struct NewHabitView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a binding by using .constant
-        NewHabitView(isPresented: .constant(true))
+        // Create an instance of HabitViewModel
+        let viewModel = HabitViewModel()
+
+        // Create a preview of NewHabitView with necessary arguments
+        NewHabitView(viewModel: viewModel, isPresented: .constant(true))
     }
 }

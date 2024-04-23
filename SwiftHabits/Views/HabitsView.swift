@@ -8,21 +8,16 @@
 import SwiftUI
 
 struct HabitsView: View {
-    @ObservedObject var viewModel = WeekdayPickerViewModel()
+    @ObservedObject var habitViewModel: HabitViewModel
+    @ObservedObject var weekdayPickerViewModel: WeekdayPickerViewModel
     @State private var showingNewHabit = false
     
-    let habits = [
-        ("Walking", "Repeat everyday", "11:00 pm", 0.7),
-        ("Reading", "20 pages a day", "9:00 pm", 0.5),
-        ("Meditation", "Daily 15 minutes", "7:00 am", 0.9)
-    ]
-
     var body: some View {
         VStack(spacing: 20) {
             HStack(spacing: 8) {
-                ForEach(Array(zip(viewModel.days.indices, viewModel.days)), id: \.0) { index, day in
-                    DayButtonView(day: day, date: viewModel.weekDates[index], isSelected: viewModel.selectedDayIndex == index, action: {
-                        viewModel.selectedDayIndex = index
+                ForEach(Array(zip(weekdayPickerViewModel.days.indices, weekdayPickerViewModel.days)), id: \.0) { index, day in
+                    DayButtonView(day: day, date: weekdayPickerViewModel.weekDates[index], isSelected: weekdayPickerViewModel.selectedDayIndex == index, action: {
+                        weekdayPickerViewModel.selectedDayIndex = index
                     })
                 }
             }
@@ -33,30 +28,29 @@ struct HabitsView: View {
 
             VStack(alignment: .leading, spacing: 10) {
                 HeaderTitleView(titleKey: "Today's Habits", paddingLeading: 20, paddingTop: 5)
-
                 
-                List(habits, id: \.0) { habit in
+                List(habitViewModel.habits) { habit in
                     HabitCardView(habit: habit)
                 }
                 .listStyle(PlainListStyle())
-            }
+                  }
             .padding(.horizontal, 10)
+            Spacer()
+            
+            Button(action: {
+                showingNewHabit = true
+            }, label: {
+                Text("+ New habit")
+                    .padding()
+            })
+            .background(Color.blue)
+            .cornerRadius(15)
+            .foregroundColor(.white)
+            .fullScreenCover(isPresented: $showingNewHabit) {
+                NewHabitView(viewModel: habitViewModel, isPresented: $showingNewHabit)
+            }
+            Spacer()
         }
-        Spacer()
-        
-        Button(action: {
-            showingNewHabit = true
-        }, label: {
-            Text("+ New habit")
-                .padding()
-        })
-        .background(Color.blue)
-        .cornerRadius(15)
-        .foregroundColor(.white)
-        .fullScreenCover(isPresented: $showingNewHabit) {
-                        NewHabitView(isPresented: $showingNewHabit)
-                    }
-        Spacer()
     }
 }
 
@@ -113,29 +107,26 @@ struct GoalCardView: View {
 
 
 struct HabitCardView: View {
-    var habit: (String, String, String, Double)
+    var habit: Habit
 
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text(habit.0).habitTextStyle()
-                Text(habit.1).font(.subheadline)
-                Text(habit.2).font(.footnote)
+                Text(habit.name).font(.headline)
+                // Du kan lägga till andra egenskaper från din Habit här
             }
-            .padding(.leading, 20)
-
             Spacer()
-
-            ProgressView(value: habit.3, total: 1.0)
+            // Ersätt detta med relevant UI för progress eller andra detaljer
+            ProgressView(value: 0.5, total: 1.0)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
-                .padding(.trailing, 20)
         }
         .frame(height: 80)
         .background(Color.white)
-        .cardStyle()
+        .cornerRadius(10)
     }
 }
+
 
 struct DayButtonView: View {
     var day: String
@@ -201,5 +192,5 @@ extension View {
 }
 
 #Preview {
-    HabitsView()
+    HabitsView(habitViewModel: HabitViewModel(), weekdayPickerViewModel: WeekdayPickerViewModel())
 }
