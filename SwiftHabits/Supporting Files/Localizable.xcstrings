@@ -12,7 +12,14 @@
       }
     },
     "+ New habit" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ Ny vana"
+          }
+        }
+      }
     },
     "8:00 AM" : {
 
@@ -38,33 +45,64 @@
       }
     },
     "Add habit" : {
-
-    },
-    "Add new habit" : {
-      "extractionState" : "stale",
       "localizations" : {
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till en ny vana"
+            "value" : "Lägg till vana"
           }
         }
       }
     },
     "Add New Habit" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till ny vana"
+          }
+        }
+      }
     },
     "Choose Image" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj icon"
+          }
+        }
+      }
     },
     "Enter habit name" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ange namnet på vanan"
+          }
+        }
+      }
     },
     "Every day" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varje dag"
+          }
+        }
+      }
     },
     "Frequency" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frekvent"
+          }
+        }
+      }
     },
     "Fri" : {
       "extractionState" : "manual",
@@ -84,7 +122,14 @@
       }
     },
     "Habit title" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titel på vanan"
+          }
+        }
+      }
     },
     "Habits" : {
       "extractionState" : "manual",
@@ -125,13 +170,34 @@
       }
     },
     "Remind at specific time" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Påminn vid en viss tidpunkt"
+          }
+        }
+      }
     },
     "Repeat" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upprepa"
+          }
+        }
+      }
     },
     "Repeat every day" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upprepa varje dag"
+          }
+        }
+      }
     },
     "Sat" : {
       "extractionState" : "manual",

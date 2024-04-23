@@ -14,45 +14,68 @@ struct HabitsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            HStack(spacing: 8) {
-                ForEach(Array(zip(weekdayPickerViewModel.days.indices, weekdayPickerViewModel.days)), id: \.0) { index, day in
-                    DayButtonView(day: day, date: weekdayPickerViewModel.weekDates[index], isSelected: weekdayPickerViewModel.selectedDayIndex == index, action: {
-                        weekdayPickerViewModel.selectedDayIndex = index
-                    })
-                }
-            }
-            .padding(.horizontal)
+            WeekdayPickerView(viewModel: weekdayPickerViewModel)
             Spacer()
-
             GoalCardView()
-
-            VStack(alignment: .leading, spacing: 10) {
-                HeaderTitleView(titleKey: "Today's Habits", paddingLeading: 20, paddingTop: 5)
-                
-                List(habitViewModel.habits) { habit in
-                    HabitCardView(habit: habit)
-                }
-                .listStyle(PlainListStyle())
-                  }
-            .padding(.horizontal, 10)
+            HabitListView(viewModel: habitViewModel)
             Spacer()
-            
-            Button(action: {
-                showingNewHabit = true
-            }, label: {
-                Text("+ New habit")
-                    .padding()
-            })
-            .background(Color.blue)
-            .cornerRadius(15)
-            .foregroundColor(.white)
-            .fullScreenCover(isPresented: $showingNewHabit) {
-                NewHabitView(viewModel: habitViewModel, isPresented: $showingNewHabit)
-            }
+            NewHabitButton(showingNewHabit: $showingNewHabit, viewModel: habitViewModel)
             Spacer()
         }
     }
 }
+
+struct WeekdayPickerView: View {
+    @ObservedObject var viewModel: WeekdayPickerViewModel
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(Array(zip(viewModel.days.indices, viewModel.days)), id: \.0) { index, day in
+                DayButtonView(day: day, date: viewModel.weekDates[index], isSelected: viewModel.selectedDayIndex == index, action: {
+                    viewModel.selectedDayIndex = index
+                })
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
+struct HabitListView: View {
+    @ObservedObject var viewModel: HabitViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HeaderTitleView(titleKey: "Today's Habits", paddingLeading: 20, paddingTop: 5)
+            List(viewModel.habits) { habit in
+                HabitCardView(habit: habit)
+            }
+            .listStyle(PlainListStyle())
+        }
+        .padding(.horizontal, 10)
+    }
+}
+
+struct NewHabitButton: View {
+    @Binding var showingNewHabit: Bool
+    var viewModel: HabitViewModel
+
+    var body: some View {
+        Button(action: {
+            showingNewHabit = true
+        }, label: {
+            Text("+ New habit")
+                .padding()
+        })
+        .background(Color.blue)
+        .cornerRadius(15)
+        .foregroundColor(.white)
+        .fullScreenCover(isPresented: $showingNewHabit) {
+            NewHabitView(viewModel: viewModel, isPresented: $showingNewHabit)
+        }
+    }
+}
+
+
 
 struct HeaderTitleView: View {
     var titleKey: LocalizedStringKey
