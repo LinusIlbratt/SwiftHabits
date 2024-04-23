@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
-import SwiftUI
-
 struct HabitsView: View {
     @ObservedObject var viewModel = WeekdayPickerViewModel()
     @State private var showingNewHabit = false

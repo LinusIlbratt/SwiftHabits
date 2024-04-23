@@ -14,6 +14,9 @@
     "+ New habit" : {
 
     },
+    "8:00 AM" : {
+
+    },
     "10 of 15 completed" : {
       "localizations" : {
         "sv" : {
@@ -34,7 +37,7 @@
         }
       }
     },
-    "Add Habit" : {
+    "Add habit" : {
 
     },
     "Add new habit" : {
@@ -49,6 +52,18 @@
       }
     },
     "Add New Habit" : {
+
+    },
+    "Choose Image" : {
+
+    },
+    "Enter habit name" : {
+
+    },
+    "Every day" : {
+
+    },
+    "Frequency" : {
 
     },
     "Fri" : {
@@ -68,6 +83,9 @@
         }
       }
     },
+    "Habit title" : {
+
+    },
     "Habits" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -78,9 +96,6 @@
           }
         }
       }
-    },
-    "Lägg till ny vana här." : {
-
     },
     "Mon" : {
       "extractionState" : "manual",
@@ -109,6 +124,12 @@
         }
       }
     },
+    "Remind at specific time" : {
+
+    },
+    "Repeat" : {
+
+    },
     "Sat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -125,6 +146,9 @@
           }
         }
       }
+    },
+    "Select Days" : {
+
     },
     "Sun" : {
       "extractionState" : "manual",
