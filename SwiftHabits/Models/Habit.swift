@@ -13,4 +13,5 @@ struct Habit: Identifiable {
     var iconName: String
     var frequency: String
     var clockReminder: String
+    var progress: Double = 0.0
 }

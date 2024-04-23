@@ -48,8 +48,6 @@ struct NewHabitView: View {
                 // time reminder and input
                 TimeReminderInputView(clockReminder: $viewModel.clockReminder)
                 
-                Spacer()
-                
                 HStack {
                     Spacer()
                     Button("Add habit") {
