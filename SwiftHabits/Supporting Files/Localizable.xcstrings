@@ -150,9 +150,6 @@
         }
       }
     },
-    "Select Days" : {
-
-    },
     "Sun" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -28,119 +28,37 @@ struct NewHabitView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                Text("Habit title")
-                    .font(.headline)
-                    .padding(.top, 20)
-                    .padding(.leading, 20)
+                HabitTitel()
                 
-                TextField("Enter habit name", text: $viewModel.habitName)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .background(RoundedRectangle(cornerRadius: 25).fill(Color.gray.opacity(0.2)))
-                    .padding(.horizontal, 20)
-                Text("Choose Image")
-                    .font(.headline)
-                    .padding()
+                // user input for habit name
+                HabitNameInputView(habitName: $viewModel.habitName)
+                
                 // card for icons
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.white)
-                        .shadow(radius: 5)
-                    
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 20) {
-                        ForEach(icons, id: \.self) { icon in
-                            Image(systemName: icon)
-                                .font(.largeTitle)
-                                .padding()
-                                .background(viewModel.selectedIcon == icon ? Color.blue : Color.clear)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .onTapGesture {
-                                    viewModel.selectedIcon = icon
-                                }
-                        }
-                    }
-                    .padding(.top, 5)
-                }
-                .padding()
-                Text("Repeat")
-                    .font(.headline)
-                    .padding(.leading, 20)
+                IconPicker(icons: icons, selectedIcon: $viewModel.selectedIcon)
                 
                 // repeat picker
-                Picker("Frequency", selection: $frequency) {
-                    ForEach(frequencyOptions, id: \.self) { option in
-                        Text(option).tag(option)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(1)))
-                .padding(.horizontal)
-                Text("Select Days")
-                    .font(.headline)
-                    .padding(.leading, 20)
+                FrequencyPickerView(frequency: $frequency, frequencyOptions: frequencyOptions)
                 
                 // day picker
-                HStack {
-                    ForEach(0..<days.count, id: \.self) { index in
-                        Button(action: {
-                            daysSelected[index].toggle()
-                        }) {
-                            Text(days[index])
-                                .fontWeight(.medium)
-                                .foregroundColor(daysSelected[index] ? .white : .black)
-                                .padding(.vertical, 10)
-                                .padding(.horizontal)
-                                .background(daysSelected[index] ? Color.blue : Color.gray.opacity(0.2))
-                                .cornerRadius(15)
-                        }
-                    }
-                }
-                .padding(.horizontal)
+                DayPickerView(daysSelected: $daysSelected, days: days)
                 
                 // every day label and toggle
-                HStack {
-                    Text("Every day")
-                        .font(.headline)
-                        .padding(.leading, 20)
-                    Spacer()
-                    Toggle(isOn: $selectAllDays) {
-                        EmptyView()
-                    }
-                    .onChange(of: selectAllDays) { _ in
-                        for index in daysSelected.indices {
-                            daysSelected[index] = selectAllDays
-                        }
-                    }
-                    .padding(.trailing, 20)
-                }
-                .padding(.vertical)
+                EveryDayToggleView(selectAllDays: $selectAllDays, daysSelected: $daysSelected)
                 
                 // time reminder and input
-                HStack {
-                    Text("Remind at specific time")
-                        .font(.headline)
-                        .padding(.leading, 20)
-                    Spacer()
-                    
-                    TextField("8:00 AM", text: $viewModel.clockReminder)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .font(.subheadline)
-                        .frame(width: 100)
-                        .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.2)))
-                        .padding(.trailing, 20)
-                        }
-                        .padding(.vertical)
-                
+                TimeReminderInputView(clockReminder: $viewModel.clockReminder)
                 
                 Spacer()
                 
-                Button("Add habit") {
-                    viewModel.addHabit()
-                    isPresented = false
+                HStack {
+                    Spacer()
+                    Button("Add habit") {
+                        viewModel.addHabit()
+                        isPresented = false
+                    }
+                    .buttonStyle(CustomButtonStyle())
+                    Spacer()
                 }
-                .padding()
             }
             .navigationBarTitle("Add New Habit", displayMode: .inline)
             .navigationBarItems(leading: Button(action: {
@@ -152,12 +70,108 @@ struct NewHabitView: View {
     }
 }
 
+struct HabitTitel: View {
+    var body: some View {
+        Text("Habit title")
+            .font(.headline)
+            .padding(.top, 20)
+            .padding(.leading, 20)
+    }
+}
+
+struct HabitNameInputView: View {
+    @Binding var habitName: String
+
+    var body: some View {
+        TextField("Enter habit name", text: $habitName)
+            .paddedTextFieldStyle()
+            .padding(.horizontal, 10)            
+    }
+}
+
+struct FrequencyPickerView: View {
+    @Binding var frequency: String
+    var frequencyOptions: [String]
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Repeat")
+                .font(.headline)
+                .padding(.leading, 20)
+
+            Picker("Frequency", selection: $frequency) {
+                ForEach(frequencyOptions, id: \.self) { option in
+                    Text(option).tag(option)
+                }
+            }
+            .customPickerStyle()
+        }
+    }
+}
+
+struct DayPickerView: View {
+    @Binding var daysSelected: [Bool]
+    let days: [String]
+
+    var body: some View {
+        HStack {
+            ForEach(0..<days.count, id: \.self) { index in
+                DayButton(isSelected: $daysSelected[index], label: days[index])
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
+struct EveryDayToggleView: View {
+    @Binding var selectAllDays: Bool
+    @Binding var daysSelected: [Bool]
+
+    var body: some View {
+        HStack {
+            Text("Every day")
+                .font(.headline)
+                .padding(.leading, 20)
+            Spacer()
+            Toggle(isOn: $selectAllDays) {
+                EmptyView()
+            }
+            .onChange(of: selectAllDays) { newValue in
+                daysSelected = Array(repeating: newValue, count: daysSelected.count)
+            }
+            .padding(.trailing, 20)
+        }
+        .padding(.vertical)
+    }
+}
+
+struct TimeReminderInputView: View {
+    @Binding var clockReminder: String
+
+    var body: some View {
+        HStack {
+            Text("Remind at specific time")
+                .font(.headline)
+                .padding(.leading, 20)
+            Spacer()
+            TextField("8:00 AM", text: $clockReminder)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+                .font(.subheadline)
+                .frame(width: 100)
+                .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.2)))
+                .padding(.trailing, 20)
+        }
+        .padding(.vertical)
+    }
+}
+
 
 struct NewHabitView_Previews: PreviewProvider {
     static var previews: some View {
         // Create an instance of HabitViewModel
         let viewModel = HabitViewModel()
-
+        
         // Create a preview of NewHabitView with necessary arguments
         NewHabitView(viewModel: viewModel, isPresented: .constant(true))
     }

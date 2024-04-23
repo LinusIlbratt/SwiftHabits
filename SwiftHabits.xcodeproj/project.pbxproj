@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B0A71D92BD80E880048DD27 /* CustomModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0A71D82BD80E880048DD27 /* CustomModifiers.swift */; };
 		1B1EA0272BD645BA00D202CE /* SwiftHabitsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0262BD645BA00D202CE /* SwiftHabitsApp.swift */; };
 		1B1EA0292BD645BA00D202CE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0282BD645BA00D202CE /* ContentView.swift */; };
 		1B1EA02B2BD645BA00D202CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA02A2BD645BA00D202CE /* Assets.xcassets */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B0A71D82BD80E880048DD27 /* CustomModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModifiers.swift; sourceTree = "<group>"; };
 		1B1EA0232BD645BA00D202CE /* SwiftHabits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftHabits.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B1EA0262BD645BA00D202CE /* SwiftHabitsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHabitsApp.swift; sourceTree = "<group>"; };
 		1B1EA0282BD645BA00D202CE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				1B1EA0282BD645BA00D202CE /* ContentView.swift */,
 				1B1EA0612BD6697700D202CE /* HabitsView.swift */,
 				1BE408B22BD774CF00AA212B /* NewHabitView.swift */,
+				1B0A71D82BD80E880048DD27 /* CustomModifiers.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */,
 				1B1EA0272BD645BA00D202CE /* SwiftHabitsApp.swift in Sources */,
 				1BE408B92BD7AA1100AA212B /* HabitViewModel.swift in Sources */,
+				1B0A71D92BD80E880048DD27 /* CustomModifiers.swift in Sources */,
 				1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */,
 				1BE408B52BD7A21A00AA212B /* Habit.swift in Sources */,
 			);
