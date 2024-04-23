@@ -13,6 +13,7 @@ import SwiftUI
 
 struct HabitsView: View {
     @ObservedObject var viewModel = WeekdayPickerViewModel()
+    
     let habits = [
         ("Walking", "Repeat everyday", "11:00 pm", 0.7),
         ("Reading", "20 pages a day", "9:00 pm", 0.5),
@@ -34,7 +35,8 @@ struct HabitsView: View {
             GoalCardView()
 
             VStack(alignment: .leading, spacing: 10) {
-                HeaderTitleView(title: "Today's Habits", paddingLeading: 20, paddingTop: 5)
+                HeaderTitleView(titleKey: "Today's Habits", paddingLeading: 20, paddingTop: 5)
+
                 
                 List(habits, id: \.0) { habit in
                     HabitCardView(habit: habit)
@@ -46,23 +48,23 @@ struct HabitsView: View {
         Spacer()
         
         Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-            Text("Add new habit")
+            Text("+ New habit")
                 .padding()
         })
         .background(Color.blue)
         .cornerRadius(15)
         .foregroundColor(.white)
-        .padding()
+        Spacer()
     }
 }
 
 struct HeaderTitleView: View {
-    var title: String
+    var titleKey: LocalizedStringKey
     var paddingLeading: CGFloat
     var paddingTop: CGFloat
 
     var body: some View {
-        Text(title)
+        Text(titleKey)
             .font(.system(size: 14, weight: .bold))
             .padding(.leading, paddingLeading)
             .padding(.top, paddingTop)
@@ -79,8 +81,8 @@ struct GoalCardView: View {
                     Text("10 of 15 completed")
                         .font(.subheadline)
                 }
-                // Använd en VStack för att gruppera progressbaren och procenttexten
-                VStack(alignment: .trailing, spacing: 0) {  // Använd .trailing för att justera till höger
+                
+                VStack(alignment: .trailing, spacing: 0) {
                     ProgressView(value: 80, total: 100)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(width: 300, height: 20)
@@ -88,7 +90,7 @@ struct GoalCardView: View {
                         .font(.caption)
                 }
             }
-            .padding(.horizontal, 20) // Lägg till padding på sidorna för att ge mer utrymme
+            .padding(.horizontal, 20)
             .padding(.vertical, 10)
             .background(Color.white)
             .cornerRadius(15)
@@ -99,7 +101,7 @@ struct GoalCardView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .offset(y: -50)  // Justerad för att placeras ovanför kortet
+                .offset(y: -50) 
         }
         .padding(.top, 20)
     }
@@ -114,12 +116,9 @@ struct HabitCardView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text(habit.0)
-                    .font(.headline)
-                Text(habit.1)
-                    .font(.subheadline)
-                Text(habit.2)
-                    .font(.footnote)
+                Text(habit.0).habitTextStyle()
+                Text(habit.1).font(.subheadline)
+                Text(habit.2).font(.footnote)
             }
             .padding(.leading, 20)
 
@@ -128,12 +127,11 @@ struct HabitCardView: View {
             ProgressView(value: habit.3, total: 1.0)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
-                .padding(.trailing, 40)
+                .padding(.trailing, 20)
         }
         .frame(height: 80)
         .background(Color.white)
-        .cornerRadius(15)
-        .shadow(radius: 5)
+        .cardStyle()
     }
 }
 
@@ -146,9 +144,7 @@ struct DayButtonView: View {
     var body: some View {
         Button(action: action) {
             VStack {
-                Text(LocalizedStringKey(day))
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(isSelected ? .white : .primary)
+                Text(LocalizedStringKey(day)).habitTextStyle()
                 Text(date)
                     .font(.system(size: 14))
                     .foregroundColor(isSelected ? .white : .secondary)
@@ -188,7 +184,19 @@ struct CircularProgressBarStyle: ProgressViewStyle {
 }
 
 
+extension View {
+    func cardStyle() -> some View {
+        self
+            .cornerRadius(15)
+            .shadow(radius: 5)
+    }
 
+    func habitTextStyle() -> some View {
+        self
+            .font(.system(size: 16, weight: .medium))
+            .foregroundColor(.primary)
+    }
+}
 
 #Preview {
     HabitsView()

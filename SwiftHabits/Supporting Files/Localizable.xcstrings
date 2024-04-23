@@ -1,6 +1,46 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld%%" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "10 of 15 completed" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 av 15 avklarade"
+          }
+        }
+      }
+    },
+    "80%" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "Add new habit" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till en ny vana"
+          }
+        }
+      }
+    },
     "Fri" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -108,7 +148,21 @@
       }
     },
     "Today's Habits" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Habits"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagens Vanor"
+          }
+        }
+      }
     },
     "Tues" : {
       "extractionState" : "manual",
@@ -140,6 +194,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ons"
+          }
+        }
+      }
+    },
+    "Your Daily Goal Almost Done" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina Dagliga Mål"
           }
         }
       }
