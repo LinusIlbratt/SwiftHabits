@@ -11,4 +11,6 @@ struct Habit: Identifiable {
     let id = UUID()
     var name: String
     var iconName: String
+    var frequency: String
+    var clockReminder: String
 }

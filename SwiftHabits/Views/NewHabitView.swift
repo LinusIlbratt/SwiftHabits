@@ -10,9 +10,9 @@ import SwiftUI
 struct NewHabitView: View {
     @ObservedObject var viewModel: HabitViewModel
     @Binding var isPresented: Bool
-    @State private var specificTime = ""
+    @State private var clockReminder = ""
     @State private var selectedIcon = ""
-    @State private var frequency = "Daily"
+    @State private var frequency = ""
     @State private var daysSelected = Array(repeating: false, count: 7)
     @State private var selectAllDays = false
     
@@ -52,10 +52,10 @@ struct NewHabitView: View {
                             Image(systemName: icon)
                                 .font(.largeTitle)
                                 .padding()
-                                .background(self.selectedIcon == icon ? Color.blue : Color.clear)
+                                .background(viewModel.selectedIcon == icon ? Color.blue : Color.clear)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                 .onTapGesture {
-                                    self.selectedIcon = icon
+                                    viewModel.selectedIcon = icon
                                 }
                         }
                     }
@@ -123,7 +123,7 @@ struct NewHabitView: View {
                         .padding(.leading, 20)
                     Spacer()
                     
-                    TextField("8:00 AM", text: $specificTime)
+                    TextField("8:00 AM", text: $viewModel.clockReminder)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 16)
                         .font(.subheadline)
@@ -137,7 +137,7 @@ struct NewHabitView: View {
                 Spacer()
                 
                 Button("Add habit") {
-                    viewModel.addHabit(iconName: selectedIcon)
+                    viewModel.addHabit()
                     isPresented = false
                 }
                 .padding()

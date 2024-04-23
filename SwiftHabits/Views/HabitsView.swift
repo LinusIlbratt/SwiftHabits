@@ -116,12 +116,22 @@ struct HabitCardView: View {
                 .foregroundColor(.blue) // Set the color of the icon
                 .padding(.trailing, 10)
             VStack(alignment: .leading, spacing: 5) {
-                Text(habit.name).font(.headline)
+                Text(habit.name)
+                    .font(.headline)
+                if habit.frequency == "Daily" {
+                    Text("Repeat every day")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+                Text(habit.clockReminder)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
                 // add more properties from Habit here
             }
             Spacer()
-            // Ersätt detta med relevant UI för progress eller andra detaljer
-            ProgressView(value: 0.5, total: 1.0)
+            
+            ProgressView(value: 0, total: 1.0)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
                 .padding(.trailing, 10)

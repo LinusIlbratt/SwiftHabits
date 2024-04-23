@@ -10,11 +10,22 @@ import SwiftUI
 class HabitViewModel: ObservableObject {
     @Published var habits: [Habit] = []
     @Published var habitName: String = ""  // Default empty string to start with
-    
-    func addHabit(iconName: String) {
-        let newHabit = Habit(name: habitName, iconName: iconName)
+    @Published var iconName: String = ""   // Default icon name
+    @Published var selectedIcon: String = ""   // Default icon name
+    @Published var frequency: String = "Daily" // Default frequency value
+    @Published var clockReminder: String = ""
+
+    func addHabit() {
+        let newHabit = Habit(name: habitName, iconName: selectedIcon, frequency: frequency, clockReminder: clockReminder)
         habits.append(newHabit)
-        // Reset the fields after adding the habit
-        habitName = ""
+        resetFields()
+    }
+
+    private func resetFields() {
+        habitName = ""  // Reset the fields after adding the habit
+        iconName = ""  // Ensure this is reset if needed elsewhere or handled differently
+        selectedIcon = ""  // Reset selected icon
+        frequency = "Daily" // Reset frequency to default
+        clockReminder = ""
     }
 }

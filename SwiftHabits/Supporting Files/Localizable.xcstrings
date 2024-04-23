@@ -130,6 +130,9 @@
     "Repeat" : {
 
     },
+    "Repeat every day" : {
+
+    },
     "Sat" : {
       "extractionState" : "manual",
       "localizations" : {
