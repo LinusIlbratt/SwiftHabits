@@ -16,7 +16,7 @@ struct HabitsView: View {
         VStack(spacing: 20) {
             WeekdayPickerView(viewModel: weekdayPickerViewModel)
             Spacer()
-            GoalCardView()
+            GoalCardView(viewModel: habitViewModel)
             HabitListView(viewModel: habitViewModel)
             Spacer()
             NewHabitButton(showingNewHabit: $showingNewHabit, viewModel: habitViewModel)
@@ -41,21 +41,27 @@ struct WeekdayPickerView: View {
 }
 
 struct GoalCardView: View {
+    @ObservedObject var viewModel: HabitViewModel
+
     var body: some View {
+        let totalHabits = viewModel.habits.count
+        let completedHabits = viewModel.habits.filter { $0.progress == 1.0 }.count
+        let completionPercentage = totalHabits > 0 ? (Double(completedHabits) / Double(totalHabits)) * 100 : 0
+
         ZStack(alignment: .topLeading) {
             VStack(alignment: .trailing, spacing: 10) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Your Daily Goal Almost Done")
+                    Text("Your Daily Goal")
                         .font(.headline)
-                    Text("10 of 15 completed")
+                    Text("\(completedHabits) of \(totalHabits) completed")
                         .font(.subheadline)
                 }
                 
                 VStack(alignment: .trailing, spacing: 0) {
-                    ProgressView(value: 80, total: 100)
+                    ProgressView(value: completionPercentage, total: 100)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(width: 300, height: 20)
-                    Text("80%")
+                    Text("\(Int(completionPercentage))%")
                         .font(.caption)
                 }
             }
@@ -66,7 +72,7 @@ struct GoalCardView: View {
             .shadow(radius: 5)
             .frame(width: 350, height: 80)
 
-            Image("icon_bear")
+            Image("icon_bear") // Make sure this image exists in your assets
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
@@ -75,6 +81,7 @@ struct GoalCardView: View {
         .padding(.top, 20)
     }
 }
+
 
 struct HabitListView: View {
     @ObservedObject var viewModel: HabitViewModel
