@@ -9,11 +9,12 @@ import SwiftUI
 
 class HabitViewModel: ObservableObject {
     @Published var habits: [Habit] = []
-    @Published var habitName: String = ""
+    @Published var habitName: String = ""  // Default empty string to start with
     
-    func addHabit() {
-        let newHabit = Habit(name: habitName)
+    func addHabit(iconName: String) {
+        let newHabit = Habit(name: habitName, iconName: iconName)
         habits.append(newHabit)
-        habitName = "" // reset name after add
+        // Reset the fields after adding the habit
+        habitName = ""
     }
 }

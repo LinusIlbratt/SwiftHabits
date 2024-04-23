@@ -137,7 +137,7 @@ struct NewHabitView: View {
                 Spacer()
                 
                 Button("Add habit") {
-                    viewModel.addHabit()
+                    viewModel.addHabit(iconName: selectedIcon)
                     isPresented = false
                 }
                 .padding()

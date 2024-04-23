@@ -108,18 +108,23 @@ struct GoalCardView: View {
 
 struct HabitCardView: View {
     var habit: Habit
-
+    
     var body: some View {
         HStack {
+            Image(systemName: habit.iconName) // Display the icon
+                .font(.title) // Set the size of the icon
+                .foregroundColor(.blue) // Set the color of the icon
+                .padding(.trailing, 10)
             VStack(alignment: .leading, spacing: 5) {
                 Text(habit.name).font(.headline)
-                // Du kan lägga till andra egenskaper från din Habit här
+                // add more properties from Habit here
             }
             Spacer()
             // Ersätt detta med relevant UI för progress eller andra detaljer
             ProgressView(value: 0.5, total: 1.0)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
+                .padding(.trailing, 10)
         }
         .frame(height: 80)
         .background(Color.white)
