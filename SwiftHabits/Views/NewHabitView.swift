@@ -40,7 +40,7 @@ struct NewHabitView: View {
                 FrequencyPickerView(frequency: $frequency, frequencyOptions: frequencyOptions)
                 
                 // day picker
-                DayPickerView(daysSelected: $daysSelected, days: days)
+                DayPickerView(daysSelected: $daysSelected)
                 
                 // every day label and toggle
                 EveryDayToggleView(selectAllDays: $selectAllDays, daysSelected: $daysSelected)
@@ -51,8 +51,16 @@ struct NewHabitView: View {
                 HStack {
                     Spacer()
                     Button("Add habit") {
+                        // Set the viewModel properties with the current state before adding the habit
+                        viewModel.habitName = viewModel.habitName  // Assuming you already bind this directly in a TextField
+                        viewModel.iconName = selectedIcon
+                        viewModel.frequency = frequency
+                        // viewModel.clockReminder = clockReminder // Ensure you have a UI element to set this or default it
+                        viewModel.daysSelected = daysSelected
+
+                        // Now call addHabit which uses these properties
                         viewModel.addHabit()
-                        isPresented = false
+                        isPresented = false  // Dismiss the view
                     }
                     .buttonStyle(CustomButtonStyle())
                     Spacer()
@@ -109,7 +117,7 @@ struct FrequencyPickerView: View {
 
 struct DayPickerView: View {
     @Binding var daysSelected: [Bool]
-    let days: [String]
+    let days: [String] = ["M", "T", "W", "T", "F", "S", "S"]
 
     var body: some View {
         HStack {
@@ -120,6 +128,7 @@ struct DayPickerView: View {
         .padding(.horizontal)
     }
 }
+
 
 struct EveryDayToggleView: View {
     @Binding var selectAllDays: Bool

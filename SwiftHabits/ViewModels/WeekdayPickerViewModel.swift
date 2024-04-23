@@ -55,8 +55,10 @@ class WeekdayPickerViewModel: ObservableObject {
 // Computed property to get the start of the current day.
 // Returns the date set to midnight according to the current calendar and timezone.
 extension Date {
-    var startOfDay: Date {
-        Calendar.current.startOfDay(for: self)
+    func dayOfWeek() -> Int {
+        let calendar = Calendar.current
+        let dayNumber = calendar.component(.weekday, from: self)
+        return (dayNumber + 5) % 7  // justera beroende på din dagordning, Calendar: söndag är standard 1
     }
 }
 

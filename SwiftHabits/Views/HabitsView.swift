@@ -44,8 +44,9 @@ struct GoalCardView: View {
     @ObservedObject var viewModel: HabitViewModel
 
     var body: some View {
-        let totalHabits = viewModel.habits.count
-        let completedHabits = viewModel.habits.filter { $0.progress == 1.0 }.count
+        let activeHabits = viewModel.activeHabitsForToday()
+        let totalHabits = activeHabits.count
+        let completedHabits = activeHabits.filter { $0.progress == 1.0 }.count
         let completionPercentage = totalHabits > 0 ? (Double(completedHabits) / Double(totalHabits)) * 100 : 0
 
         ZStack(alignment: .topLeading) {
@@ -83,20 +84,27 @@ struct GoalCardView: View {
 }
 
 
+
 struct HabitListView: View {
     @ObservedObject var viewModel: HabitViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HeaderTitleView(titleKey: "Today's Habits", paddingLeading: 20, paddingTop: 5)
-            List($viewModel.habits) { $habit in // use $ to bind directly
-                HabitCardView(habit: $habit)
+            List {
+                ForEach($viewModel.habits.indices, id: \.self) { index in
+                    // Only show the card if the habit should be active today
+                    if viewModel.habits[index].daysActive[Date().dayOfWeek()] {
+                        HabitCardView(habit: $viewModel.habits[index])
+                    }
+                }
             }
             .listStyle(PlainListStyle())
         }
         .padding(.horizontal, 10)
     }
 }
+
 
 struct HabitCardView: View {
     @Binding var habit: Habit // use Binding to allow modification
