@@ -13,33 +13,44 @@ class WeekdayPickerViewModel: ObservableObject {
     @Published var selectedDayIndex = 0
     private var dateManager = DateManager()
     private var cancellables = Set<AnyCancellable>()
+    @Published var weekDates: [Date] = []
 
     let days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"]
     
     // computed property to generate formatted date strings for the current week
     var datesForWeek: [String] {
-            let calendar = Calendar.current
-            let today = Date()
-            let weekday = calendar.component(.weekday, from: today)
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd" // Example format: "MMM dd" is Sep 23
-
-            return (0..<7).map { i in
-                let date = calendar.date(byAdding: .day, value: i - (weekday - 1), to: today)!
-                return formatter.string(from: date)
-            }
-        }
-    
-    // Computed property returning a list of this week's dates using dateManager.
-    var weekDates: [String] {
-        dateManager.weekDates(startingFrom: Date())
+        let today = Date()
+        let weekDates = dateManager.weekDates(startingFrom: today)
+        return weekDates
     }
     
     
     init() {
+        updateWeekDates()
         selectedDayIndex = dateManager.getDayIndex(for: Date()) // Sets selectedDayIndex to current day using dateManager
         observeTimeChanges()
     }
+    
+    func isTodaySelected() -> Bool {
+        let today = Date()
+        let calendar = Calendar.current
+        let selectedDayIndex = selectedDayIndex
+        
+        let adjustedDayIndex = (selectedDayIndex + 1 + 7) % 7
+        
+        let selectedDate = weekDates[adjustedDayIndex]
+        
+        return calendar.isDate(today, inSameDayAs: selectedDate)
+    }
+    
+    func updateWeekDates() {
+            let calendar = Calendar.current
+            let today = Date()
+            let weekday = calendar.component(.weekday, from: today)
+            weekDates = (0..<7).map { i in
+                calendar.date(byAdding: .day, value: i - (weekday - 1), to: today)!
+            }
+        }
     
     // Subscribes to system notifications for significant time changes, such as the start of a new day
     private func observeTimeChanges() {
@@ -71,9 +82,11 @@ class WeekdayPickerViewModel: ObservableObject {
 extension Date {
     func dayOfWeek() -> Int {
         let calendar = Calendar.current
-        let dayNumber = calendar.component(.weekday, from: self)
-        return (dayNumber + 5) % 7  // justera beroende på din dagordning, Calendar: söndag är standard 1
+        var dayNumber = calendar.component(.weekday, from: self) - 2
+        if dayNumber < 0 {
+            dayNumber += 7
+        }
+        return dayNumber
     }
 }
-
 

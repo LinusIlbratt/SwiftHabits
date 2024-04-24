@@ -17,7 +17,7 @@ struct HabitsView: View {
             WeekdayPickerView(weekdayPickerViewModel: weekdayPickerViewModel, habitViewModel: habitViewModel)
             Spacer()
             GoalCardView(viewModel: habitViewModel)
-            HabitListView(viewModel: habitViewModel)
+            HabitListView(viewModel: habitViewModel, weekdayPickerViewModel: weekdayPickerViewModel)
             Spacer()
             NewHabitButton(showingNewHabit: $showingNewHabit, viewModel: habitViewModel)
             Spacer()
@@ -95,6 +95,7 @@ struct GoalCardView: View {
 
 struct HabitListView: View {
     @ObservedObject var viewModel: HabitViewModel
+    @ObservedObject var weekdayPickerViewModel: WeekdayPickerViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -105,10 +106,13 @@ struct HabitListView: View {
                 }
             }
             .listStyle(PlainListStyle())
+            .disabled(!weekdayPickerViewModel.isTodaySelected())
         }
         .padding(.horizontal, 10)
     }
+
 }
+
 
 
 
