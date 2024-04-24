@@ -86,6 +86,9 @@
         }
       }
     },
+    "Daily Goals" : {
+
+    },
     "Enter habit name" : {
       "localizations" : {
         "sv" : {
@@ -312,9 +315,6 @@
           }
         }
       }
-    },
-    "Your Daily Goal" : {
-
     },
     "Your Daily Goal Almost Done" : {
       "extractionState" : "stale",
