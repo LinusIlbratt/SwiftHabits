@@ -52,25 +52,28 @@ struct GoalCardView: View {
     @ObservedObject var viewModel: HabitViewModel
 
     var body: some View {
-        let activeHabits = viewModel.activeHabitsForToday()
-        let totalHabits = activeHabits.count
-        let completedHabits = activeHabits.filter { $0.progress == 1.0 }.count
-        let completionPercentage = totalHabits > 0 ? (Double(completedHabits) / Double(totalHabits)) * 100 : 0
-
         ZStack(alignment: .topLeading) {
             VStack(alignment: .trailing, spacing: 10) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Your Daily Goal")
+                    Text("Daily Goals")
                         .font(.headline)
-                    Text("\(completedHabits) of \(totalHabits) completed")
+
+                    // Dynamically display the number of completed habits out of the total
+                    Text("\(viewModel.filteredHabits.filter { $0.progress == 1.0 }.count) of \(viewModel.filteredHabits.count) completed")
                         .font(.subheadline)
                 }
                 
                 VStack(alignment: .trailing, spacing: 0) {
-                    ProgressView(value: completionPercentage, total: 100)
+                    // Calculate the progress based on completed habits
+                    let progressValue = Double(viewModel.filteredHabits.filter { $0.progress == 1.0 }.count)
+                    let progressTotal = Double(viewModel.filteredHabits.count)
+                    let progressPercentage = progressTotal > 0 ? (progressValue / progressTotal) * 100 : 0
+                    
+                    ProgressView(value: progressValue, total: progressTotal)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(width: 300, height: 20)
-                    Text("\(Int(completionPercentage))%")
+                    
+                    Text("\(Int(progressPercentage))%")
                         .font(.caption)
                 }
             }
@@ -81,7 +84,7 @@ struct GoalCardView: View {
             .shadow(radius: 5)
             .frame(width: 350, height: 80)
 
-            Image("icon_bear") // Make sure this image exists in your assets
+            Image("icon_bear") // Ensure this image is available in your assets
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
