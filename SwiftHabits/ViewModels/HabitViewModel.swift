@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 class HabitViewModel: ObservableObject {
     @Published var habits: [Habit] = []
@@ -21,6 +22,10 @@ class HabitViewModel: ObservableObject {
     init() {
         loadInitialData()
         filterHabitsForDay(index: Date().dayOfWeek())
+        
+        for habit in habits {
+                    scheduleNotification(for: habit)
+                }
     }
     
     func addHabit() {
@@ -34,6 +39,7 @@ class HabitViewModel: ObservableObject {
             daysActive: daysSelected
         )
         habits.append(newHabit)
+        scheduleNotification(for: newHabit) 
         resetFields()
     }
 
@@ -62,11 +68,62 @@ class HabitViewModel: ObservableObject {
     
     private func loadInitialData() {
         let sampleHabits = [
-            Habit(name: "Go for a walk", iconName: "figure.walk", frequency: "Daily", clockReminder: "08:00 AM", progress: 0.5, streakCount: 3, daysActive: [true, true, true, true, true, false, false]),
-            Habit(name: "Read a book", iconName: "book.closed", frequency: "Weekly", clockReminder: "21:00 PM", progress: 0.3, streakCount: 2, daysActive: [false, false, false, true, false, false, true]),
-            Habit(name: "Meditation", iconName: "moon.zzz", frequency: "Daily", clockReminder: "07:00 AM", progress: 0.7, streakCount: 3, daysActive: [true, false, true, false, true, false, true])
+            Habit(name: "Go for a walk", iconName: "figure.walk", frequency: "Daily", clockReminder: "13:13", progress: 0.5, streakCount: 3, daysActive: [true, true, true, true, true, false, false]),
+            Habit(name: "Read a book", iconName: "book.closed", frequency: "Weekly", clockReminder: "14:00", progress: 0.3, streakCount: 2, daysActive: [false, false, false, true, false, false, true]),
+            Habit(name: "Meditation", iconName: "moon.zzz", frequency: "Daily", clockReminder: "13:03", progress: 0.7, streakCount: 3, daysActive: [true, false, true, false, true, false, true])
         ]
         habits.append(contentsOf: sampleHabits)
     }
+    
+    func scheduleNotification(for habit: Habit) {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder: \(habit.name)"
+        content.body = "Time to engage in your habit!"
+        content.sound = UNNotificationSound.default
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm" // this might not be necessary
+
+        // fetch current day
+        let today = Date()
+
+        // fetch time from habit.clockReminder
+        guard let time = dateFormatter.date(from: habit.clockReminder) else {
+            print("Error: Invalid time format for reminder: \(habit.clockReminder)")
+            return
+        }
+
+        // create a new date with current time and selected time
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: today)
+        components.hour = Calendar.current.component(.hour, from: time)
+        components.minute = Calendar.current.component(.minute, from: time)
+
+        guard let date = Calendar.current.date(from: components) else {
+            print("Error: Unable to create date for reminder: \(habit.clockReminder)")
+            return
+        }
+
+        let timeInterval = date.timeIntervalSinceNow
+        guard timeInterval > 0 else {
+            print("Error: Reminder time has already passed for \(habit.name) at \(habit.clockReminder)")
+            return
+        }
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+        let request = UNNotificationRequest(identifier: habit.id.uuidString, content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error.localizedDescription)")
+            } else {
+                print("Notification scheduled successfully for habit: \(habit.name) at \(habit.clockReminder)")
+            }
+        }
+    }
+
+
+
+
+
 
 }

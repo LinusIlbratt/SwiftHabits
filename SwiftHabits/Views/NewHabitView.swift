@@ -161,7 +161,7 @@ struct TimeReminderInputView: View {
                 .font(.headline)
                 .padding(.leading, 20)
             Spacer()
-            TextField("8:00 AM", text: $clockReminder)
+            TextField("8:00", text: $clockReminder)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 16)
                 .font(.subheadline)
