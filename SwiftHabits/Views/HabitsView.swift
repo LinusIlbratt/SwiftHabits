@@ -14,7 +14,7 @@ struct HabitsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            WeekdayPickerView(viewModel: weekdayPickerViewModel)
+            WeekdayPickerView(weekdayPickerViewModel: weekdayPickerViewModel, habitViewModel: habitViewModel)
             Spacer()
             GoalCardView(viewModel: habitViewModel)
             HabitListView(viewModel: habitViewModel)
@@ -26,19 +26,27 @@ struct HabitsView: View {
 }
 
 struct WeekdayPickerView: View {
-    @ObservedObject var viewModel: WeekdayPickerViewModel
+    @ObservedObject var weekdayPickerViewModel: WeekdayPickerViewModel
+    @ObservedObject var habitViewModel: HabitViewModel
 
     var body: some View {
+        let dateStrings = weekdayPickerViewModel.datesForWeek
+
         HStack(spacing: 8) {
-            ForEach(Array(zip(viewModel.days.indices, viewModel.days)), id: \.0) { index, day in
-                DayButtonView(day: day, date: viewModel.weekDates[index], isSelected: viewModel.selectedDayIndex == index, action: {
-                    viewModel.selectedDayIndex = index
-                })
+            ForEach(Array(zip(weekdayPickerViewModel.days.indices, weekdayPickerViewModel.days)), id: \.0) { index, day in
+                DayButtonView(day: day,
+                              date: dateStrings[index],
+                              isSelected: weekdayPickerViewModel.selectedDayIndex == index,
+                              action: {
+                                weekdayPickerViewModel.selectedDayIndex = index
+                                habitViewModel.filterHabitsForDay(index: index)
+                              })
             }
         }
         .padding(.horizontal)
     }
 }
+
 
 struct GoalCardView: View {
     @ObservedObject var viewModel: HabitViewModel
@@ -92,11 +100,8 @@ struct HabitListView: View {
         VStack(alignment: .leading, spacing: 10) {
             HeaderTitleView(titleKey: "Today's Habits", paddingLeading: 20, paddingTop: 5)
             List {
-                ForEach($viewModel.habits.indices, id: \.self) { index in
-                    // Only show the card if the habit should be active today
-                    if viewModel.habits[index].daysActive[Date().dayOfWeek()] {
-                        HabitCardView(habit: $viewModel.habits[index])
-                    }
+                ForEach($viewModel.filteredHabits, id: \.id) { $habit in
+                    HabitCardView(habit: $habit)
                 }
             }
             .listStyle(PlainListStyle())
@@ -104,6 +109,7 @@ struct HabitListView: View {
         .padding(.horizontal, 10)
     }
 }
+
 
 
 struct HabitCardView: View {

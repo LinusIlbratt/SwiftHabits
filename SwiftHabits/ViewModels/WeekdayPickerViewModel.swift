@@ -16,6 +16,20 @@ class WeekdayPickerViewModel: ObservableObject {
 
     let days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"]
     
+    // computed property to generate formatted date strings for the current week
+    var datesForWeek: [String] {
+            let calendar = Calendar.current
+            let today = Date()
+            let weekday = calendar.component(.weekday, from: today)
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd" // Example format: "MMM dd" is Sep 23
+
+            return (0..<7).map { i in
+                let date = calendar.date(byAdding: .day, value: i - (weekday - 1), to: today)!
+                return formatter.string(from: date)
+            }
+        }
+    
     // Computed property returning a list of this week's dates using dateManager.
     var weekDates: [String] {
         dateManager.weekDates(startingFrom: Date())

@@ -9,6 +9,7 @@ import SwiftUI
 
 class HabitViewModel: ObservableObject {
     @Published var habits: [Habit] = []
+    @Published var filteredHabits: [Habit] = []
     @Published var habitName: String = ""
     @Published var iconName: String = ""
     @Published var selectedIcon: String = ""
@@ -19,6 +20,7 @@ class HabitViewModel: ObservableObject {
 
     init() {
         loadInitialData()
+        filterHabitsForDay(index: Date().dayOfWeek())
     }
     
     func addHabit() {
@@ -47,6 +49,10 @@ class HabitViewModel: ObservableObject {
     
     func filteredHabits(by dayIndex: Int) -> [Habit] {
             habits.filter { $0.daysActive[dayIndex] }
+        }
+    
+    func filterHabitsForDay(index: Int) {
+            filteredHabits = habits.filter { $0.daysActive[index] }
         }
     
     func activeHabitsForToday() -> [Habit] {
