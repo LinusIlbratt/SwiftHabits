@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
-struct Habit: Identifiable {
-    let id = UUID()
+struct Habit: Identifiable, Codable {
+    @DocumentID var id : String?
     var name: String
     var iconName: String
     var frequency: String
