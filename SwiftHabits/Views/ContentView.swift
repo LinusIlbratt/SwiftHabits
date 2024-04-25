@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct ContentView: View {
     @StateObject var habitViewModel = HabitViewModel()
     @StateObject var weekdayPickerViewModel = WeekdayPickerViewModel()
+    let db = Firestore.firestore()
     
     var body: some View {
         TabView {
@@ -28,6 +30,8 @@ struct ContentView: View {
             .tabItem {
                 Label("Progress", systemImage: "chart.bar.xaxis")
             }
+        }.onAppear() {
+            db.collection("test").addDocument(data: ["name": "Linus"])
         }
     }
 }

@@ -4,17 +4,19 @@
 //
 //  Created by Linus Ilbratt on 2024-04-24.
 //
-
-import UIKit
 import SwiftUI
+import UIKit
+import Firebase
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Set the notification center delegate
+    var window: UIWindow?
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        
+        FirebaseApp.configure()
+        
         UNUserNotificationCenter.current().delegate = self
         
-        // Request notification permissions
         requestNotificationPermission()
         
         return true
@@ -30,15 +32,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
     }
     
-    // Handle notifications while app is in the foreground
+    // handle notifications in the app background
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound])
     }
     
-    // Handle response to notifications
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    // handle notification answers
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: () -> Void) {
         completionHandler()
     }
 }
+
+
 
 
