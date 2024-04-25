@@ -8,6 +8,7 @@
 import SwiftUI
 import UserNotifications
 import Firebase
+import FirebaseFirestoreSwift
 
 class HabitViewModel: ObservableObject {
     @Published var habits: [Habit] = []
@@ -19,15 +20,22 @@ class HabitViewModel: ObservableObject {
     @Published var clockReminder: String = ""
     @Published var streakCount: Int = 0
     @Published var daysSelected: [Bool] = [false, false, false, false, false, false, false]  // default all days to false
+    
     let db = Firestore.firestore()
+    private var listener: ListenerRegistration?
 
     init() {
-        // loadInitialData()
+        loadInitialData()
         filterHabitsForDay(index: Date().dayOfWeek())
+        setupDataListener()
         
         for habit in habits {
                     scheduleNotification(for: habit)
                 }
+    }
+    
+    deinit {
+        listener?.remove()
     }
     
     func addHabit() {
@@ -80,6 +88,28 @@ class HabitViewModel: ObservableObject {
 //        ]
 //        habits.append(contentsOf: sampleHabits)
 //    }
+    
+    private func loadInitialData() {
+        db.collection("habits").getDocuments { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                var fetchedHabits: [Habit] = []
+                for document in querySnapshot!.documents {
+                    do {
+                        let habit = try document.data(as: Habit.self) // Directly try to decode
+                        fetchedHabits.append(habit)
+                    } catch {
+                        print("Error decoding habit: \(error)")
+                    }
+                }
+                DispatchQueue.main.async {
+                    self.habits.append(contentsOf: fetchedHabits)
+                }
+            }
+        }
+    }
+
     
     func scheduleNotification(for habit: Habit) {
         let content = UNMutableNotificationContent()
