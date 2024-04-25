@@ -25,9 +25,9 @@ class HabitViewModel: ObservableObject {
     private var listener: ListenerRegistration?
 
     init() {
-        loadInitialData()
+        setupFirestoreListener()
         filterHabitsForDay(index: Date().dayOfWeek())
-        setupDataListener()
+        
         
         for habit in habits {
                     scheduleNotification(for: habit)
@@ -37,6 +37,61 @@ class HabitViewModel: ObservableObject {
     deinit {
         listener?.remove()
     }
+    
+    private func setupFirestoreListener() {
+            listener = db.collection("habits").addSnapshotListener { (querySnapshot, error) in
+                guard let snapshot = querySnapshot else {
+                    print("Error listening for habit updates: \(error?.localizedDescription ?? "No error")")
+                    return
+                }
+
+                snapshot.documentChanges.forEach { change in
+                    self.handleDocumentChange(change)
+                }
+            }
+        }
+    
+    private func handleDocumentChange(_ change: DocumentChange) {
+            var habit: Habit
+            do {
+                habit = try change.document.data(as: Habit.self)
+            } catch {
+                print("Error decoding habit: \(error)")
+                return
+            }
+
+            switch change.type {
+            case .added:
+                if !habits.contains(where: { $0.id == habit.id }) {
+                    DispatchQueue.main.async {
+                        self.habits.append(habit)
+                        self.updateFilteredHabits()
+                    }
+                }
+            case .modified:
+                if let index = habits.firstIndex(where: { $0.id == habit.id }) {
+                    DispatchQueue.main.async {
+                        self.habits[index] = habit
+                        self.updateFilteredHabits()
+                    }
+                }
+            case .removed:
+                if let index = habits.firstIndex(where: { $0.id == habit.id }) {
+                    DispatchQueue.main.async {
+                        self.habits.remove(at: index)
+                        self.updateFilteredHabits()
+                    }
+                }
+            }
+        }
+    
+    func updateFilteredHabits() {
+            // Apply your filter logic here based on selected days or other criteria
+            filteredHabits = habits.filter { habit in
+                // Example filter logic, adjust according to actual use case
+                return habit.daysActive[Calendar.current.component(.weekday, from: Date()) - 1]
+            }
+        }
     
     func addHabit() {
         let newHabit = Habit(name: habitName,
@@ -78,36 +133,6 @@ class HabitViewModel: ObservableObject {
     func activeHabitsForToday() -> [Habit] {
         let dayIndex = Date().dayOfWeek() 
         return habits.filter { $0.daysActive[dayIndex] }
-    }
-    
-//    private func loadInitialData() {
-//        let sampleHabits = [
-//            Habit(name: "Go for a walk", iconName: "figure.walk", frequency: "Daily", clockReminder: "13:13", progress: 0.5, streakCount: 3, daysActive: [true, true, true, true, true, false, false]),
-//            Habit(name: "Read a book", iconName: "book.closed", frequency: "Weekly", clockReminder: "14:00", progress: 0.3, streakCount: 2, daysActive: [false, false, false, true, false, false, true]),
-//            Habit(name: "Meditation", iconName: "moon.zzz", frequency: "Daily", clockReminder: "13:03", progress: 0.7, streakCount: 3, daysActive: [true, false, true, false, true, false, true])
-//        ]
-//        habits.append(contentsOf: sampleHabits)
-//    }
-    
-    private func loadInitialData() {
-        db.collection("habits").getDocuments { (querySnapshot, err) in
-            if let err = err {
-                print("Error getting documents: \(err)")
-            } else {
-                var fetchedHabits: [Habit] = []
-                for document in querySnapshot!.documents {
-                    do {
-                        let habit = try document.data(as: Habit.self) // Directly try to decode
-                        fetchedHabits.append(habit)
-                    } catch {
-                        print("Error decoding habit: \(error)")
-                    }
-                }
-                DispatchQueue.main.async {
-                    self.habits.append(contentsOf: fetchedHabits)
-                }
-            }
-        }
     }
 
     
