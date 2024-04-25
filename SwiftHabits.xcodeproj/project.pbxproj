@@ -24,6 +24,7 @@
 		1BD5F3522BDA5EB700073538 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1BD5F3512BDA5EB700073538 /* FirebaseAuth */; };
 		1BD5F3542BDA5EB700073538 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1BD5F3532BDA5EB700073538 /* FirebaseFirestore */; };
 		1BD5F3562BDA5EB700073538 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1BD5F3552BDA5EB700073538 /* FirebaseFirestoreSwift */; };
+		1BD5F3582BDA607C00073538 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1BD5F3572BDA607C00073538 /* GoogleService-Info.plist */; };
 		1BE408B32BD774CF00AA212B /* NewHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B22BD774CF00AA212B /* NewHabitView.swift */; };
 		1BE408B52BD7A21A00AA212B /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B42BD7A21A00AA212B /* Habit.swift */; };
 		1BE408B92BD7AA1100AA212B /* HabitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */; };
@@ -63,6 +64,7 @@
 		1B1EA0612BD6697700D202CE /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdayPickerViewModel.swift; sourceTree = "<group>"; };
 		1B1EA0652BD6796700D202CE /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
+		1BD5F3572BDA607C00073538 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1BE408B22BD774CF00AA212B /* NewHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitView.swift; sourceTree = "<group>"; };
 		1BE408B42BD7A21A00AA212B /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewModel.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		1B1EA0252BD645BA00D202CE /* SwiftHabits */ = {
 			isa = PBXGroup;
 			children = (
+				1BD5F3572BDA607C00073538 /* GoogleService-Info.plist */,
 				1B1EA0262BD645BA00D202CE /* SwiftHabitsApp.swift */,
 				1BFE5A242BD9139A0046B116 /* AppDelegate.swift */,
 				1B1EA0502BD645D800D202CE /* Views */,
@@ -328,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B1EA02E2BD645BA00D202CE /* Preview Assets.xcassets in Resources */,
+				1BD5F3582BDA607C00073538 /* GoogleService-Info.plist in Resources */,
 				1B1EA02B2BD645BA00D202CE /* Assets.xcassets in Resources */,
 				1B1EA05E2BD660A700D202CE /* Localizable.xcstrings in Resources */,
 			);
