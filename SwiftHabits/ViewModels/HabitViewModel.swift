@@ -21,17 +21,11 @@ class HabitViewModel: ObservableObject {
     @Published var streakCount: Int = 0
     @Published var daysSelected: [Bool] = [false, false, false, false, false, false, false]  // default all days to false
     
-    let db = Firestore.firestore()
+    private var db = Firestore.firestore()
     private var listener: ListenerRegistration?
 
     init() {
         setupFirestoreListener()
-        filterHabitsForDay(index: Date().dayOfWeek())
-        
-        
-        for habit in habits {
-                    scheduleNotification(for: habit)
-                }
     }
     
     deinit {
@@ -39,58 +33,60 @@ class HabitViewModel: ObservableObject {
     }
     
     private func setupFirestoreListener() {
-            listener = db.collection("habits").addSnapshotListener { (querySnapshot, error) in
+            listener = db.collection("habits").addSnapshotListener { [weak self] (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
                     print("Error listening for habit updates: \(error?.localizedDescription ?? "No error")")
                     return
                 }
 
                 snapshot.documentChanges.forEach { change in
-                    self.handleDocumentChange(change)
+                    self?.handleDocumentChange(change)
                 }
             }
         }
     
     private func handleDocumentChange(_ change: DocumentChange) {
-            var habit: Habit
             do {
-                habit = try change.document.data(as: Habit.self)
+                let habit = try change.document.data(as: Habit.self)
+                DispatchQueue.main.async {
+                    switch change.type {
+                    case .added:
+                        self.handleAdded(habit)
+                    case .modified:
+                        self.handleModified(habit)
+                    case .removed:
+                        self.handleRemoved(habit)
+                    }
+                }
             } catch {
                 print("Error decoding habit: \(error)")
-                return
-            }
-
-            switch change.type {
-            case .added:
-                if !habits.contains(where: { $0.id == habit.id }) {
-                    DispatchQueue.main.async {
-                        self.habits.append(habit)
-                        self.updateFilteredHabits()
-                    }
-                }
-            case .modified:
-                if let index = habits.firstIndex(where: { $0.id == habit.id }) {
-                    DispatchQueue.main.async {
-                        self.habits[index] = habit
-                        self.updateFilteredHabits()
-                    }
-                }
-            case .removed:
-                if let index = habits.firstIndex(where: { $0.id == habit.id }) {
-                    DispatchQueue.main.async {
-                        self.habits.remove(at: index)
-                        self.updateFilteredHabits()
-                    }
-                }
             }
         }
     
-    func updateFilteredHabits() {
-            // Apply your filter logic here based on selected days or other criteria
-            filteredHabits = habits.filter { habit in
-                // Example filter logic, adjust according to actual use case
-                return habit.daysActive[Calendar.current.component(.weekday, from: Date()) - 1]
+    private func handleAdded(_ habit: Habit) {
+            if !habits.contains(where: { $0.id == habit.id }) {
+                habits.append(habit)
             }
+            updateFilteredHabits()
+        }
+
+        private func handleModified(_ habit: Habit) {
+            if let index = habits.firstIndex(where: { $0.id == habit.id }) {
+                habits[index] = habit
+            }
+            updateFilteredHabits()
+        }
+
+        private func handleRemoved(_ habit: Habit) {
+            if let index = habits.firstIndex(where: { $0.id == habit.id }) {
+                habits.remove(at: index)
+            }
+            updateFilteredHabits()
+        }
+
+        func updateFilteredHabits() {
+            let dayIndex = Calendar.current.component(.weekday, from: Date()) - 1
+            filteredHabits = habits.filter { $0.daysActive[dayIndex] }
         }
     
     func addHabit() {
@@ -102,9 +98,10 @@ class HabitViewModel: ObservableObject {
                              streakCount: streakCount,
                              daysActive: daysSelected)
         saveToFirestore(habit: newHabit)
+        self.updateFilteredHabits()
     }
 
-    private func resetFields() {
+    func resetFields() {
         habitName = ""
         iconName = ""
         selectedIcon = ""
@@ -183,11 +180,5 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
-
-
-
-
-
-
 
 }

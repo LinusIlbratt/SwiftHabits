@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HabitsView: View {
     @StateObject var habitViewModel: HabitViewModel
-    @ObservedObject var weekdayPickerViewModel: WeekdayPickerViewModel
+    @StateObject var weekdayPickerViewModel: WeekdayPickerViewModel
     @State private var showingNewHabit = false
     
     var body: some View {
@@ -112,8 +112,11 @@ struct HabitListView: View {
             .disabled(!weekdayPickerViewModel.isTodaySelected())
         }
         .padding(.horizontal, 10)
+        .onAppear {
+            weekdayPickerViewModel.updateWeekDates()  // Recalculate week dates if necessary
+            viewModel.updateFilteredHabits()  // Re-filter habits based on the current day
+        }
     }
-
 }
 
 

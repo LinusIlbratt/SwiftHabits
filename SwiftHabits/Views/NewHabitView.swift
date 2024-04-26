@@ -55,11 +55,12 @@ struct NewHabitView: View {
                         viewModel.habitName = viewModel.habitName  // Assuming you already bind this directly in a TextField
                         viewModel.iconName = selectedIcon
                         viewModel.frequency = frequency
-                        // viewModel.clockReminder = clockReminder // Ensure you have a UI element to set this or default it
+                        viewModel.clockReminder = clockReminder  // Ensure you have a UI element to set this or default it
                         viewModel.daysSelected = daysSelected
 
                         // Now call addHabit which uses these properties
                         viewModel.addHabit()
+                        viewModel.resetFields()
                         isPresented = false  // Dismiss the view
                     }
                     .buttonStyle(CustomButtonStyle())
