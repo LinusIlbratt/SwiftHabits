@@ -119,18 +119,18 @@ class HabitViewModel: ObservableObject {
            }
        }
     
-    func filteredHabits(by dayIndex: Int) -> [Habit] {
-            habits.filter { $0.daysActive[dayIndex] }
-        }
-    
-    func filterHabitsForDay(index: Int) {
-            filteredHabits = habits.filter { $0.daysActive[index] }
-        }
-    
-    func activeHabitsForToday() -> [Habit] {
-        let dayIndex = Date().dayOfWeek() 
-        return habits.filter { $0.daysActive[dayIndex] }
-    }
+//    func filteredHabits(by dayIndex: Int) -> [Habit] {
+//            habits.filter { $0.daysActive[dayIndex] }
+//        }
+//    
+//    func filterHabitsForDay(index: Int) {
+//            filteredHabits = habits.filter { $0.daysActive[index] }
+//        }
+//    
+//    func activeHabitsForToday() -> [Habit] {
+//        let dayIndex = Date().dayOfWeek() 
+//        return habits.filter { $0.daysActive[dayIndex] }
+//    }
 
     
     func scheduleNotification(for habit: Habit) {

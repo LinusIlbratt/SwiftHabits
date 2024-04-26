@@ -14,7 +14,7 @@ struct HabitsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            WeekdayPickerView(weekdayPickerViewModel: weekdayPickerViewModel, habitViewModel: habitViewModel)
+            WeekdayPickerView(weekdayPickerViewModel: weekdayPickerViewModel)
             Spacer()
             GoalCardView(viewModel: habitViewModel)
             HabitListView(viewModel: habitViewModel, weekdayPickerViewModel: weekdayPickerViewModel)
@@ -27,7 +27,6 @@ struct HabitsView: View {
 
 struct WeekdayPickerView: View {
     @ObservedObject var weekdayPickerViewModel: WeekdayPickerViewModel
-    @ObservedObject var habitViewModel: HabitViewModel
 
     var body: some View {
         let dateStrings = weekdayPickerViewModel.datesForWeek
@@ -36,16 +35,14 @@ struct WeekdayPickerView: View {
             ForEach(Array(zip(weekdayPickerViewModel.days.indices, weekdayPickerViewModel.days)), id: \.0) { index, day in
                 DayButtonView(day: day,
                               date: dateStrings[index],
-                              isSelected: weekdayPickerViewModel.selectedDayIndex == index,
-                              action: {
-                                weekdayPickerViewModel.selectedDayIndex = index
-                                habitViewModel.filterHabitsForDay(index: index)
-                              })
+                              isSelected: weekdayPickerViewModel.selectedDayIndex == index)
             }
         }
         .padding(.horizontal)
     }
 }
+
+
 
 
 struct GoalCardView: View {
@@ -211,21 +208,18 @@ struct DayButtonView: View {
     var day: String
     var date: String
     var isSelected: Bool
-    var action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            VStack {
-                Text(LocalizedStringKey(day)).habitTextStyle()
-                Text(date)
-                    .font(.system(size: 14))
-                    .foregroundColor(isSelected ? .white : .secondary)
-            }
-            .frame(minWidth: 44, minHeight: 60)
-            .padding(.vertical, 8)
-            .background(isSelected ? Color.blue : Color.clear)
-            .cornerRadius(8)
+        VStack {
+            Text(LocalizedStringKey(day))
+                .habitTextStyle()
+            Text(date)
+                .font(.system(size: 14))
+                .foregroundColor(isSelected ? .white : .secondary)
         }
+        .frame(minWidth: 44, minHeight: 60)
+        .background(isSelected ? Color.blue.opacity(0.8) : Color.blue.opacity(0.15))
+        .cornerRadius(8)
     }
 }
 
