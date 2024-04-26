@@ -111,7 +111,6 @@ struct HabitListView: View {
         .padding(.horizontal, 10)
         .onAppear {
             weekdayPickerViewModel.updateWeekDates()  // Recalculate week dates if necessary
-            viewModel.updateFilteredHabits()  // Re-filter habits based on the current day
         }
     }
 }
