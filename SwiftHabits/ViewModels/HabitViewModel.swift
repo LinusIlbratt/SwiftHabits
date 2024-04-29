@@ -127,22 +127,30 @@ class HabitViewModel: ObservableObject {
             return
         }
 
-        // Proceed to update the streak count and set lastStreakUpdate to true
+        // Update habit
+        habit.totalCompletions += 1
         habit.streakCount += 1
         habit.lastStreakUpdate = true
         habit.progress = 1
+
+        // update longest streak within the same habit modification
+        if habit.streakCount > habit.longestStreak {
+            habit.longestStreak = habit.streakCount
+        }
+
         habits[index] = habit  // Update the array to reflect the change
 
-        // Update Firestore with both new streak count and lastStreakUpdate status
+        // Update Firestore
         updateHabitInFirestore(habitId: habitId, habit: habit)
     }
-
     func updateHabitInFirestore(habitId: String, habit: Habit) {
         let habitRef = db.collection("habits").document(habitId)
         habitRef.updateData([
             "streakCount": habit.streakCount,
             "lastStreakUpdate": habit.lastStreakUpdate,
-            "progress": habit.progress
+            "progress": habit.progress,
+            "totalCompletions": habit.totalCompletions,
+            "longestStreak": habit.longestStreak
         ]) { error in
             if let error = error {
                 print("Error updating streak count: \(error)")
