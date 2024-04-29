@@ -10,10 +10,13 @@ import SwiftUI
 class DateManager {
     private let calendar = Calendar.current
     private let dateFormatter: DateFormatter
+    private let dayDateFormatter: DateFormatter
 
     init() {
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d" // Only the day of the month
+        dayDateFormatter = DateFormatter()
+        dayDateFormatter.dateFormat = "MM/dd/yyyy"
     }
 
     func weekDates(startingFrom startDate: Date) -> [String] {
@@ -33,6 +36,11 @@ class DateManager {
         let weekday = calendar.component(.weekday, from: date) // Sunday = 1, Monday = 2, ...
         // Adjust for array starting with Monday as 0
         return (weekday + 5) % 7
+    }
+    
+    func habitDayCreation() -> String {
+        let dateCreatedString = dayDateFormatter.string(from: Date())
+        return dateCreatedString
     }
 }
 

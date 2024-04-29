@@ -23,6 +23,7 @@ class HabitViewModel: ObservableObject {
     
     private var db = Firestore.firestore()
     private var listener: ListenerRegistration?
+    private let dateManager = DateManager()
 
     init() {
         loadHabits()
@@ -64,7 +65,16 @@ class HabitViewModel: ObservableObject {
     
     func addHabit() {
         let newId = UUID().uuidString  // Generate a unique ID
-        let newHabit = Habit(id: newId, name: habitName, iconName: selectedIcon, frequency: frequency, clockReminder: clockReminder, progress: 0.0, streakCount: streakCount, daysActive: daysSelected)
+        let dateCreationString = dateManager.habitDayCreation()
+        let newHabit = Habit(id: newId,
+                             name: habitName,
+                             iconName: selectedIcon,
+                             frequency: frequency,
+                             clockReminder: clockReminder,
+                             progress: 0.0,
+                             streakCount: streakCount,
+                             daysActive: daysSelected,
+                             dayCreated: dateCreationString)
 
         print("Adding new habit: \(newHabit)")
 

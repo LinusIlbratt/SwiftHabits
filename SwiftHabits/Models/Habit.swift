@@ -16,6 +16,12 @@ struct Habit: Identifiable, Codable {
     var clockReminder: String
     var progress: Double = 0.0
     var streakCount: Int = 0
+    var longestStreak: Int = 0
+    var totalCompletions: Int = 0
+    var totalAttempts: Int = 0
     var daysActive: [Bool]
+    var badges: [String] = []
+    var dayCompleted: [Date] = []
+    var dayCreated: String
 }
 
