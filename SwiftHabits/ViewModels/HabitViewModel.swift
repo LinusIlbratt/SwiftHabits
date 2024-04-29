@@ -34,24 +34,21 @@ class HabitViewModel: ObservableObject {
     }
     
     func loadHabits() {
-        db.collection("habits").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error getting documents: \(error)")
-                return
-            }
-            guard let documents = snapshot?.documents else {
-                print("No documents")
-                return
-            }
-            self.habits = documents.compactMap { document -> Habit? in
-                var habit = try? document.data(as: Habit.self)
-                habit?.id = document.documentID  // Ensure the id matches the document ID
-                return habit
-            }
-            self.updateFilteredHabits() // Ensure to filter the habits after loading
-        }
-    }
-
+           db.collection("habits").getDocuments { snapshot, error in
+               if let error = error {
+                   print("Error getting documents: \(error)")
+                   return
+               }
+               guard let documents = snapshot?.documents else {
+                   print("No documents")
+                   return
+               }
+               self.habits = documents.compactMap { document -> Habit? in
+                   try? document.data(as: Habit.self)
+               }
+               self.updateFilteredHabits() // Ensure to filter the habits after loading
+           }
+       }
 
     func updateFilteredHabits() {
             let todayIndex = self.currentDayIndex()
@@ -117,15 +114,36 @@ class HabitViewModel: ObservableObject {
             }
         }
     
-    func addStreak(to habitId: String) {
+    func completeHabit(to habitId: String) {
         guard let index = habits.firstIndex(where: { $0.id == habitId }) else {
-            print("Habit not found for ID: \(habitId)")
+            print("Habit not found")
             return
         }
-        habits[index].streakCount += 1
-        print("Updating habit ID: \(habitId) with new streak count: \(habits[index].streakCount)")
+        var habit = habits[index]
+
+        // Check if the streak was already updated today
+        if habit.lastStreakUpdate {
+            print("Habit already done today \(habitId)")
+            return
+        }
+
+        // Proceed to update the streak count and set lastStreakUpdate to true
+        habit.streakCount += 1
+        habit.lastStreakUpdate = true
+        habit.progress = 1
+        habits[index] = habit  // Update the array to reflect the change
+
+        // Update Firestore with both new streak count and lastStreakUpdate status
+        updateHabitInFirestore(habitId: habitId, habit: habit)
+    }
+
+    func updateHabitInFirestore(habitId: String, habit: Habit) {
         let habitRef = db.collection("habits").document(habitId)
-        habitRef.updateData(["streakCount": habits[index].streakCount]) { error in
+        habitRef.updateData([
+            "streakCount": habit.streakCount,
+            "lastStreakUpdate": habit.lastStreakUpdate,
+            "progress": habit.progress
+        ]) { error in
             if let error = error {
                 print("Error updating streak count: \(error)")
             } else {
@@ -134,17 +152,6 @@ class HabitViewModel: ObservableObject {
         }
     }
 
-    
-    func updateStreakCountToFirestore(habitId: String, newStreakCount: Int) {
-        let habitRef = db.collection("habits").document(habitId)
-        habitRef.updateData(["streakCount": newStreakCount]) { err in
-            if let err = err {
-                print("Error updateing streak count: \(err)")
-            } else {
-                print("Streak count successfully updated.")
-            }
-        }
-    }
     
 
     func resetFields() {

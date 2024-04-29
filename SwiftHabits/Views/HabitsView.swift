@@ -163,7 +163,7 @@ struct HabitCardView: View {
         .onTapGesture {
             withAnimation {
                 habit.progress = 1.0
-                viewModel.addStreak(to: habit.id ?? "")
+                viewModel.completeHabit(to: habit.id ?? "")
             }
         }
     }
