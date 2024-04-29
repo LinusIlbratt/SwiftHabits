@@ -37,10 +37,10 @@ struct NewHabitView: View {
                 IconPicker(icons: icons, selectedIcon: $viewModel.selectedIcon)
                 
                 // repeat picker
-                FrequencyPickerView(frequency: $frequency, frequencyOptions: frequencyOptions)
+                FrequencyPickerView(frequency: $viewModel.frequency, frequencyOptions: frequencyOptions)
                 
                 // day picker
-                DayPickerView(daysSelected: $daysSelected)
+                DayPickerView(daysSelected: $viewModel.daysSelected, days: days)
                 
                 // every day label and toggle
                 EveryDayToggleView(selectAllDays: $selectAllDays, daysSelected: $daysSelected)
@@ -50,17 +50,8 @@ struct NewHabitView: View {
                 
                 HStack {
                     Spacer()
-                    Button("Add habit") {
-                        // Set the viewModel properties with the current state before adding the habit
-                        viewModel.habitName = viewModel.habitName  // Assuming you already bind this directly in a TextField
-                        viewModel.iconName = selectedIcon
-                        viewModel.frequency = frequency
-                        viewModel.clockReminder = viewModel.clockReminder  // Ensure you have a UI element to set this or default it
-                        viewModel.daysSelected = daysSelected
-
-                        // Now call addHabit which uses these properties
-                        viewModel.addHabit()
-                        viewModel.resetFields()
+                    Button("Add Habit") {
+                        viewModel.addHabit()  // Uses properties directly from the ViewModel
                         isPresented = false  // Dismiss the view
                     }
                     .buttonStyle(CustomButtonStyle())
@@ -111,14 +102,14 @@ struct FrequencyPickerView: View {
                     Text(option).tag(option)
                 }
             }
-            .customPickerStyle()
+            .pickerStyle(SegmentedPickerStyle())
         }
     }
 }
 
 struct DayPickerView: View {
     @Binding var daysSelected: [Bool]
-    let days: [String] = ["M", "T", "W", "T", "F", "S", "S"]
+    let days: [String]
 
     var body: some View {
         HStack {

@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestoreSwift
 
 struct Habit: Identifiable, Codable {
-    @DocumentID var id : String?
+    var id: String?
     var name: String
     var iconName: String
     var frequency: String
@@ -18,3 +18,4 @@ struct Habit: Identifiable, Codable {
     var streakCount: Int = 0
     var daysActive: [Bool]
 }
+

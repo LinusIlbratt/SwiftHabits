@@ -57,6 +57,7 @@
       }
     },
     "Add habit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "sv" : {
           "stringUnit" : {
@@ -65,6 +66,9 @@
           }
         }
       }
+    },
+    "Add Habit" : {
+
     },
     "Add New Habit" : {
       "localizations" : {

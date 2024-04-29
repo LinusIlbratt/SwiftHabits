@@ -33,23 +33,23 @@ class HabitViewModel: ObservableObject {
     }
     
     func loadHabits() {
-            db.collection("habits").getDocuments { snapshot, error in
-                if let error = error {
-                    print("Error getting documents: \(error)")
-                    return
-                }
-                guard let documents = snapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-                self.habits = documents.compactMap { document -> Habit? in
-                    try? document.data(as: Habit.self)
-                }
-                self.filterHabitsForToday()
-            }
-        }
+           db.collection("habits").getDocuments { snapshot, error in
+               if let error = error {
+                   print("Error getting documents: \(error)")
+                   return
+               }
+               guard let documents = snapshot?.documents else {
+                   print("No documents")
+                   return
+               }
+               self.habits = documents.compactMap { document -> Habit? in
+                   try? document.data(as: Habit.self)
+               }
+               self.updateFilteredHabits() // Ensure to filter the habits after loading
+           }
+       }
 
-        func filterHabitsForToday() {
+    func updateFilteredHabits() {
             let todayIndex = self.currentDayIndex()
             self.filteredHabits = self.habits.filter { habit in
                 habit.daysActive[todayIndex]
@@ -63,19 +63,32 @@ class HabitViewModel: ObservableObject {
 
     
     func addHabit() {
-        let newHabit = Habit(name: habitName,
-                             iconName: selectedIcon,
-                             frequency: frequency,
-                             clockReminder: clockReminder,
-                             progress: 0.0,
-                             streakCount: streakCount,
-                             daysActive: daysSelected)
-        saveToFirestore(habit: newHabit)
+        let newId = UUID().uuidString  // Generate a unique ID
+        let newHabit = Habit(id: newId, name: habitName, iconName: selectedIcon, frequency: frequency, clockReminder: clockReminder, progress: 0.0, streakCount: streakCount, daysActive: daysSelected)
+
+        print("Adding new habit: \(newHabit)")
+
+        saveToFirestore(habit: newHabit) { [weak self] success in
+            DispatchQueue.main.async {
+                if success {
+                    self?.habits.append(newHabit)
+                    self?.updateFilteredHabits()
+                    self?.resetFields()
+
+                    print("Fields after reset:")
+                    print("Name: \(self?.habitName ?? ""), Icon: \(self?.selectedIcon ?? ""), Frequency: \(self?.frequency ?? ""), Reminder: \(self?.clockReminder ?? ""), Days Active: \(self?.daysSelected.description ?? "[]")")
+                } else {
+                    print("Error saving the habit")
+                }
+            }
+        }
     }
+
+
+
 
     func resetFields() {
         habitName = ""
-        iconName = ""
         selectedIcon = ""
         frequency = "Daily"
         clockReminder = ""
@@ -83,13 +96,22 @@ class HabitViewModel: ObservableObject {
         daysSelected = [false, false, false, false, false, false, false]
     }
     
-    private func saveToFirestore(habit: Habit) {
-           do {
-               try db.collection("habits").addDocument(from: habit)
-           } catch let error {
-               print("Error writing habit to Firestore: \(error)")
-           }
-       }
+    func saveToFirestore(habit: Habit, completion: @escaping (Bool) -> Void) {
+            let collection = Firestore.firestore().collection("habits")
+            do {
+                let _ = try collection.addDocument(from: habit) { error in
+                    if let error = error {
+                        print("Error adding document: \(error)")
+                        completion(false)
+                    } else {
+                        completion(true)
+                    }
+                }
+            } catch {
+                print("Error serializing habit: \(error)")
+                completion(false)
+            }
+        }
 
     
     func scheduleNotification(for habit: Habit) {
