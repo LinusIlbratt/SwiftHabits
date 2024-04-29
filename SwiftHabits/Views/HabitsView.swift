@@ -22,6 +22,7 @@ struct HabitsView: View {
             NewHabitButton(showingNewHabit: $showingNewHabit, viewModel: habitViewModel)
             Spacer()
         }
+        .environmentObject(habitViewModel)
     }
 }
 
@@ -120,6 +121,7 @@ struct HabitListView: View {
 
 struct HabitCardView: View {
     @Binding var habit: Habit // use Binding to allow modification
+    @EnvironmentObject var viewModel: HabitViewModel
     
     var body: some View {
         HStack {
@@ -161,7 +163,7 @@ struct HabitCardView: View {
         .onTapGesture {
             withAnimation {
                 habit.progress = 1.0
-                habit.streakCount += 1
+                viewModel.addStreak(to: habit.id ?? "")
             }
         }
     }

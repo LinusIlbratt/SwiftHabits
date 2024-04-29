@@ -34,21 +34,24 @@ class HabitViewModel: ObservableObject {
     }
     
     func loadHabits() {
-           db.collection("habits").getDocuments { snapshot, error in
-               if let error = error {
-                   print("Error getting documents: \(error)")
-                   return
-               }
-               guard let documents = snapshot?.documents else {
-                   print("No documents")
-                   return
-               }
-               self.habits = documents.compactMap { document -> Habit? in
-                   try? document.data(as: Habit.self)
-               }
-               self.updateFilteredHabits() // Ensure to filter the habits after loading
-           }
-       }
+        db.collection("habits").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                print("No documents")
+                return
+            }
+            self.habits = documents.compactMap { document -> Habit? in
+                var habit = try? document.data(as: Habit.self)
+                habit?.id = document.documentID  // Ensure the id matches the document ID
+                return habit
+            }
+            self.updateFilteredHabits() // Ensure to filter the habits after loading
+        }
+    }
+
 
     func updateFilteredHabits() {
             let todayIndex = self.currentDayIndex()
@@ -76,35 +79,26 @@ class HabitViewModel: ObservableObject {
                              daysActive: daysSelected,
                              dayCreated: dateCreationString)
 
-        print("Adding new habit: \(newHabit)")
-
-        saveToFirestore(habit: newHabit) { [weak self] success in
-            DispatchQueue.main.async {
-                if success {
-                    self?.habits.append(newHabit)
-                    self?.updateFilteredHabits()
-                    self?.resetFields()
-
-                    print("Fields after reset:")
-                    print("Name: \(self?.habitName ?? ""), Icon: \(self?.selectedIcon ?? ""), Frequency: \(self?.frequency ?? ""), Reminder: \(self?.clockReminder ?? ""), Days Active: \(self?.daysSelected.description ?? "[]")")
+        // Set the document in Firestore with the newId as the document ID
+        let documentRef = db.collection("habits").document(newId)
+        do {
+            try documentRef.setData(from: newHabit) { error in
+                if let error = error {
+                    print("Error adding document: \(error)")
                 } else {
-                    print("Error saving the habit")
+                    print("Document successfully added with ID: \(newId)")
+                    DispatchQueue.main.async {
+                        self.habits.append(newHabit)
+                        self.updateFilteredHabits()
+                        self.resetFields()
+                    }
                 }
             }
+        } catch let serializationError {
+            print("Error serializing habit: \(serializationError)")
         }
     }
 
-
-
-
-    func resetFields() {
-        habitName = ""
-        selectedIcon = ""
-        frequency = "Daily"
-        clockReminder = ""
-        streakCount = 0
-        daysSelected = [false, false, false, false, false, false, false]
-    }
     
     func saveToFirestore(habit: Habit, completion: @escaping (Bool) -> Void) {
             let collection = Firestore.firestore().collection("habits")
@@ -122,7 +116,46 @@ class HabitViewModel: ObservableObject {
                 completion(false)
             }
         }
+    
+    func addStreak(to habitId: String) {
+        guard let index = habits.firstIndex(where: { $0.id == habitId }) else {
+            print("Habit not found for ID: \(habitId)")
+            return
+        }
+        habits[index].streakCount += 1
+        print("Updating habit ID: \(habitId) with new streak count: \(habits[index].streakCount)")
+        let habitRef = db.collection("habits").document(habitId)
+        habitRef.updateData(["streakCount": habits[index].streakCount]) { error in
+            if let error = error {
+                print("Error updating streak count: \(error)")
+            } else {
+                print("Streak count successfully updated for habit ID: \(habitId)")
+            }
+        }
+    }
 
+    
+    func updateStreakCountToFirestore(habitId: String, newStreakCount: Int) {
+        let habitRef = db.collection("habits").document(habitId)
+        habitRef.updateData(["streakCount": newStreakCount]) { err in
+            if let err = err {
+                print("Error updateing streak count: \(err)")
+            } else {
+                print("Streak count successfully updated.")
+            }
+        }
+    }
+    
+
+    func resetFields() {
+        habitName = ""
+        selectedIcon = ""
+        frequency = "Daily"
+        clockReminder = ""
+        streakCount = 0
+        daysSelected = [false, false, false, false, false, false, false]
+    }
+    
     
     func scheduleNotification(for habit: Habit) {
         let content = UNMutableNotificationContent()
