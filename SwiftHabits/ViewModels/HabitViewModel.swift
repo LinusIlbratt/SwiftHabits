@@ -27,6 +27,7 @@ class HabitViewModel: ObservableObject {
 
     init() {
         loadHabits()
+        resetHabitsforNewDay()
     }
     
     deinit {
@@ -122,7 +123,7 @@ class HabitViewModel: ObservableObject {
         var habit = habits[index]
 
         // Check if the streak was already updated today
-        if habit.lastStreakUpdate {
+        if habit.isDone {
             print("Habit already done today \(habitId)")
             return
         }
@@ -130,7 +131,7 @@ class HabitViewModel: ObservableObject {
         // Update habit
         habit.totalCompletions += 1
         habit.streakCount += 1
-        habit.lastStreakUpdate = true
+        habit.isDone = true
         habit.progress = 1
 
         // update longest streak within the same habit modification
@@ -141,13 +142,13 @@ class HabitViewModel: ObservableObject {
         habits[index] = habit  // Update the array to reflect the change
 
         // Update Firestore
-        updateHabitInFirestore(habitId: habitId, habit: habit)
+        updateCompletedHabitToFirestore(habitId: habitId, habit: habit)
     }
-    func updateHabitInFirestore(habitId: String, habit: Habit) {
+    func updateCompletedHabitToFirestore(habitId: String, habit: Habit) {
         let habitRef = db.collection("habits").document(habitId)
         habitRef.updateData([
             "streakCount": habit.streakCount,
-            "lastStreakUpdate": habit.lastStreakUpdate,
+            "lastStreakUpdate": habit.isDone,
             "progress": habit.progress,
             "totalCompletions": habit.totalCompletions,
             "longestStreak": habit.longestStreak
@@ -159,6 +160,39 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
+    
+    func resetHabitsforNewDay() {
+        let todayIndex = dateManager.getDayIndex(for: Date())
+        
+        for i in 0..<habits.count {
+                if habits[i].daysActive[todayIndex] {
+                    habits[i].isDone = false
+                    habits[i].progress = 0.0
+                    
+                    if let habitId = habits[i].id {
+                        updateHabitResetToFirestore(habitId: habitId, habit: habits[i])
+                    } else {
+                        print("error: Habit id is nil at index \(i)")
+                    }
+                }
+            }
+    }
+    
+    func updateHabitResetToFirestore(habitId: String, habit: Habit) {
+        let habitRef = db.collection("habits").document(habitId)
+            habitRef.updateData([
+                "isDone": habit.isDone,
+                "progress": habit.progress
+            ]) { error in
+                if let error = error {
+                    print("Error updating habit: \(error)")
+                } else {
+                    print("Habit reset successfully for ID: \(habitId)")
+                }
+            }
+    }
+    
+    
 
     
 

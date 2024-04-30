@@ -9,6 +9,7 @@ import SwiftUI
 
 class DateManager {
     private let calendar = Calendar.current
+    var forcedDayIndex: Int?
     private let dateFormatter: DateFormatter
     private let dayDateFormatter: DateFormatter
 
@@ -21,7 +22,7 @@ class DateManager {
 
     func weekDates(startingFrom startDate: Date) -> [String] {
         let weekday = calendar.component(.weekday, from: startDate)
-        // Calculate the start of the week (assuming Monday as the first day of the week)
+        // Calculate the start of the week with Monday as the first day of the week
         guard let startOfWeek = calendar.date(byAdding: .day, value: -((weekday + 5) % 7), to: startDate) else {
             return []
         }
@@ -33,9 +34,16 @@ class DateManager {
     }
 
     func getDayIndex(for date: Date) -> Int {
-        let weekday = calendar.component(.weekday, from: date) // Sunday = 1, Monday = 2, ...
-        // Adjust for array starting with Monday as 0
-        return (weekday + 5) % 7
+            if let forcedIndex = forcedDayIndex {
+                return forcedIndex
+            }
+            let weekday = calendar.component(.weekday, from: date)
+            // Adjust for array starting with Monday as 0
+            return (weekday + 5) % 7
+        }
+    
+    func setDayIndex(index: Int) {
+        forcedDayIndex = index
     }
     
     func habitDayCreation() -> String {

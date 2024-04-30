@@ -14,15 +14,15 @@ struct Habit: Identifiable, Codable {
     var iconName: String
     var frequency: String
     var clockReminder: String
-    var progress: Double = 0.0
-    var streakCount: Int = 0
-    var longestStreak: Int = 0
-    var totalCompletions: Int = 0
-    var totalAttempts: Int = 0
+    var progress: Double = 0.0 // done but isnt resetted yet
+    var streakCount: Int = 0 // done but isnt resetted
+    var longestStreak: Int = 0 // done
+    var totalCompletions: Int = 0 // done
+    var totalAttempts: Int = 0 // not done
     var daysActive: [Bool]
     var badges: [String] = []
     var dayCompleted: [Date] = []
     var dayCreated: String
-    var lastStreakUpdate: Bool = false
+    var isDone: Bool = false // done but not resetted
 }
 
