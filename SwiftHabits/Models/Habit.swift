@@ -23,6 +23,6 @@ struct Habit: Identifiable, Codable {
     var badges: [String] = []
     var dayCompleted: [Date] = []
     var dayCreated: String
-    var isDone: Bool = false // done but not resetted
+    var isDone: Bool = false // done
 }
 

@@ -12,12 +12,18 @@ class DateManager {
     var forcedDayIndex: Int?
     private let dateFormatter: DateFormatter
     private let dayDateFormatter: DateFormatter
+    private let dateTimeFormatter: DateFormatter // New formatter for date and time
 
     init() {
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d" // Only the day of the month
+
         dayDateFormatter = DateFormatter()
         dayDateFormatter.dateFormat = "MM/dd/yyyy"
+
+        dateTimeFormatter = DateFormatter() // Initialize the new DateFormatter
+        dateTimeFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss" // Include time
+        dateTimeFormatter.timeZone = TimeZone.current // Ensure it uses the local time zone
     }
 
     func weekDates(startingFrom startDate: Date) -> [String] {
@@ -34,13 +40,13 @@ class DateManager {
     }
 
     func getDayIndex(for date: Date) -> Int {
-            if let forcedIndex = forcedDayIndex {
-                return forcedIndex
-            }
-            let weekday = calendar.component(.weekday, from: date)
-            // Adjust for array starting with Monday as 0
-            return (weekday + 5) % 7
+        if let forcedIndex = forcedDayIndex {
+            return forcedIndex
         }
+        let weekday = calendar.component(.weekday, from: date)
+        // Adjust for array starting with Monday as 0
+        return (weekday + 5) % 7
+    }
     
     func setDayIndex(index: Int) {
         forcedDayIndex = index
@@ -49,6 +55,10 @@ class DateManager {
     func habitDayCreation() -> String {
         let dateCreatedString = dayDateFormatter.string(from: Date())
         return dateCreatedString
+    }
+
+    func formattedDateTime(for date: Date) -> String {
+        return dateTimeFormatter.string(from: date) // Use the new formatter to get string
     }
 }
 

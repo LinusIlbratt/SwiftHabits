@@ -152,7 +152,7 @@ struct HabitCardView: View {
                     .padding(.trailing, 10)
             }
             
-            ProgressView(value: habit.progress, total: 1.0)
+            ProgressView(value: habit.progress, total: habit.progress)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
                 .padding(.trailing, 10)

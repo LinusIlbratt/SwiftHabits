@@ -26,30 +26,69 @@ class HabitViewModel: ObservableObject {
     private let dateManager = DateManager()
 
     init() {
-        loadHabits()
-        resetHabitsforNewDay()
+        loadHabits()     
     }
     
     deinit {
         listener?.remove()
     }
+
     
     func loadHabits() {
-           db.collection("habits").getDocuments { snapshot, error in
-               if let error = error {
-                   print("Error getting documents: \(error)")
-                   return
-               }
-               guard let documents = snapshot?.documents else {
-                   print("No documents")
-                   return
-               }
-               self.habits = documents.compactMap { document -> Habit? in
-                   try? document.data(as: Habit.self)
-               }
-               self.updateFilteredHabits() // Ensure to filter the habits after loading
-           }
-       }
+        db.collection("habits").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                print("No documents")
+                return
+            }
+            self.habits = documents.compactMap { document -> Habit? in
+                try? document.data(as: Habit.self)
+            }
+            self.checkForDayChange()
+            self.updateFilteredHabits() // Ensure to filter the habits after loading
+
+            // After habits are loaded, calculate missed days
+            self.calculateMissedDaysForAllHabits()
+            
+        }
+    }
+
+    func calculateMissedDaysForAllHabits() {
+        let currentDate = Date()
+        for index in habits.indices {
+            if let lastCompletionDate = habits[index].dayCompleted.last {
+                let missedDays = calculateMissedActiveDays(for: habits[index], until: currentDate)
+                print("Missed active days for habit \(habits[index].name): \(missedDays)")
+
+                // Update total attempts
+                habits[index].totalAttempts += missedDays
+
+                // Update Firestore
+                updateTotalAttemptsForHabit(habit: habits[index])
+            }
+        }
+    }
+
+    func updateTotalAttemptsForHabit(habit: Habit) {
+        guard let habitId = habit.id else {
+            print("Error: Habit ID is nil")
+            return
+        }
+        let habitRef = db.collection("habits").document(habitId)
+        habitRef.updateData([
+            "totalAttempts": habit.totalAttempts
+        ]) { error in
+            if let error = error {
+                print("Error updating total attempts for habit \(habit.name): \(error)")
+            } else {
+                print("Total attempts successfully updated for habit \(habit.name)")
+            }
+        }
+    }
+
 
     func updateFilteredHabits() {
             let todayIndex = self.currentDayIndex()
@@ -133,6 +172,7 @@ class HabitViewModel: ObservableObject {
         habit.streakCount += 1
         habit.isDone = true
         habit.progress = 1
+        habit.dayCompleted = [Date()]
 
         // update longest streak within the same habit modification
         if habit.streakCount > habit.longestStreak {
@@ -144,6 +184,7 @@ class HabitViewModel: ObservableObject {
         // Update Firestore
         updateCompletedHabitToFirestore(habitId: habitId, habit: habit)
     }
+    
     func updateCompletedHabitToFirestore(habitId: String, habit: Habit) {
         let habitRef = db.collection("habits").document(habitId)
         habitRef.updateData([
@@ -151,7 +192,9 @@ class HabitViewModel: ObservableObject {
             "lastStreakUpdate": habit.isDone,
             "progress": habit.progress,
             "totalCompletions": habit.totalCompletions,
-            "longestStreak": habit.longestStreak
+            "longestStreak": habit.longestStreak,
+            "dayCompleted": habit.dayCompleted,
+            "isDone": habit.isDone
         ]) { error in
             if let error = error {
                 print("Error updating streak count: \(error)")
@@ -161,25 +204,57 @@ class HabitViewModel: ObservableObject {
         }
     }
     
-    func resetHabitsforNewDay() {
-        let todayIndex = dateManager.getDayIndex(for: Date())
-        
-        for i in 0..<habits.count {
-                if habits[i].daysActive[todayIndex] {
-                    habits[i].isDone = false
-                    habits[i].progress = 0.0
-                    
-                    if let habitId = habits[i].id {
-                        updateHabitResetToFirestore(habitId: habitId, habit: habits[i])
-                    } else {
-                        print("error: Habit id is nil at index \(i)")
-                    }
-                }
-            }
+    func storeLastKnownDay() {
+        let today = Calendar.current.startOfDay(for: Date()) // Normalize to midnight
+        UserDefaults.standard.set(today, forKey: "lastKnownDay")
+    }
+
+    func getLastKnownDay() -> Date? {
+       // return UserDefaults.standard.object(forKey: "lastKnownDay") as? Date
+        let calendar = Calendar.current
+        return calendar.date(from: DateComponents(year: 2024, month: 4, day: 28))
     }
     
-    func updateHabitResetToFirestore(habitId: String, habit: Habit) {
-        let habitRef = db.collection("habits").document(habitId)
+    func checkForDayChange() {
+      // let dateManager = DateManager() // Assuming DateManager is accessible here
+        let currentDay = Calendar.current.startOfDay(for: Date())
+        print("Current Day: \(dateManager.formattedDateTime(for: currentDay))")
+
+        if let lastKnownDay = getLastKnownDay() {
+            print("Last Known Day: \(dateManager.formattedDateTime(for: lastKnownDay))")
+
+            if lastKnownDay != currentDay {
+                print("resetting")
+                resetIsDoneAndProgressForAllHabits()
+                updateTotalAttempts()
+                storeLastKnownDay()
+            }
+        } else {
+            print("No last known day stored, setting current day.")
+            storeLastKnownDay()
+        }
+    }
+
+
+    
+    func resetIsDoneAndProgressForAllHabits() {
+        print("this is running")
+        print("Number of habits to reset: \(habits.count)")
+        for index in habits.indices {
+            var habit = habits[index]
+            print("Resetting habit with ID: \(habit.id ?? "ID not found")")
+            habit.isDone = false
+            habit.progress = 0
+            habits[index] = habit
+            updateHabitResetToFirestore(habit)
+        }
+    }
+
+
+    
+    func updateHabitResetToFirestore(_ habit: Habit) {
+        guard let habitId = habit.id else { return }
+            let habitRef = db.collection("habits").document(habitId)
             habitRef.updateData([
                 "isDone": habit.isDone,
                 "progress": habit.progress
@@ -187,12 +262,76 @@ class HabitViewModel: ObservableObject {
                 if let error = error {
                     print("Error updating habit: \(error)")
                 } else {
-                    print("Habit reset successfully for ID: \(habitId)")
+                    print("Habit successfully updated with reset values for habit ID: \(habitId)")
                 }
             }
     }
     
+    func updateTotalAttempts() {
+        let currentWeekday = Calendar.current.component(.weekday, from: Date())
+        let todayIndex = (currentWeekday + 5) % 7
+        
+        for var habit in habits {
+            guard let habitId = habit.id else {
+                print("Habit ID is nil")
+                continue
+            }
+            
+            // check if today is an active day for the habit
+            if habit.daysActive.indices.contains(todayIndex) && habit.daysActive[todayIndex] {
+                // increase total attempts only if its an active day
+                habit.totalAttempts += 1
+                // update to firestore
+                
+                let habitRef = db.collection("habits").document(habitId)
+                habitRef.updateData([
+                    "totalAttempts": habit.totalAttempts
+                ]) { error in
+                    if let error = error {
+                        print("Error updating habit: \(error)")
+                    } else {
+                        print("Total attempts successfully updated for Habit ID: \(habitId)")
+                    }
+                }
+            }
+        }
+    }
     
+    func calculateMissedActiveDays(for habit: Habit, until currentDate: Date) -> Int {
+        guard let lastCompletionDate = habit.dayCompleted.last else {
+            print("No completion date available for habit \(habit.name)")
+            return 0
+        }
+
+        let calendar = Calendar.current
+        let daysPassed = calendar.dateComponents([.day], from: lastCompletionDate, to: currentDate).day ?? 0
+
+        // Check if daysPassed is positive before creating a range
+        guard daysPassed > 0 else {
+            return 0
+        }
+
+        var missedDaysCount = 0
+
+        // Iterate over the days between the last completion date and the current date
+        for dayOffset in 1...daysPassed {
+            // Calculate the date for each day
+            guard let missedDate = calendar.date(byAdding: .day, value: -dayOffset, to: currentDate) else {
+                continue
+            }
+
+            let weekdayIndex = calendar.component(.weekday, from: missedDate) - 1 // Adjusted to match your weekday indexing
+
+            // Check if the habit is active on the missed day
+            if habit.daysActive.indices.contains(weekdayIndex) && habit.daysActive[weekdayIndex] {
+                missedDaysCount += 1
+            }
+        }
+
+        return missedDaysCount
+    }
+
+
 
     
 
