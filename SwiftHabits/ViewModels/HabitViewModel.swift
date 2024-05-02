@@ -69,18 +69,42 @@ class HabitViewModel: ObservableObject {
     func calculateMissedDaysForAllHabits() {
         let currentDate = Date()
         for index in habits.indices {
-            if habits[index].dayCompleted.last != nil {
-                let missedDays = calculateMissedActiveDays(for: habits[index], until: currentDate)
-                print("Missed active days for habit \(habits[index].name): \(missedDays)")
+            guard let lastCompletionDate = habits[index].dayCompleted.last else { continue }
+            
+            let missedDays = calculateMissedActiveDays(for: habits[index], until: currentDate)
+            print("Missed active days for habit \(habits[index].name): \(missedDays)")
 
-                // Update total attempts
-                habits[index].totalAttempts += missedDays
+            if missedDays > 0 {
+                // Reset the streak count if there are missed days
+                habits[index].streakCount = 0
+                updateStreakCountInFirestore(habit: habits[index])
+            }
 
-                // Update Firestore
-                updateTotalAttemptsForHabit(habit: habits[index])
+            // Update total attempts
+            habits[index].totalAttempts += missedDays
+
+            // Update Firestore for total attempts
+            updateTotalAttemptsForHabit(habit: habits[index])
+        }
+    }
+    
+    
+
+    func updateStreakCountInFirestore(habit: Habit) {
+        guard let userId = Auth.auth().currentUser?.uid, let habitId = habit.id else { return }
+
+        let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+        habitRef.updateData([
+            "streakCount": habit.streakCount
+        ]) { error in
+            if let error = error {
+                print("Error updating streak count for habit \(habit.name): \(error)")
+            } else {
+                print("Streak count successfully reset for habit \(habit.name)")
             }
         }
     }
+
 
     func updateTotalAttemptsForHabit(habit: Habit) {
         guard let userId = Auth.auth().currentUser?.uid else {
