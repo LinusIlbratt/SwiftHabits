@@ -40,9 +40,6 @@
         }
       }
     },
-    "0 days done in %@" : {
-
-    },
     "8:00" : {
 
     },
@@ -109,6 +106,9 @@
 
     },
     "Daily Goals" : {
+
+    },
+    "days done in %@" : {
 
     },
     "Enter habit name" : {

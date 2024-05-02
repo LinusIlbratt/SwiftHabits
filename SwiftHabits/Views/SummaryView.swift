@@ -17,8 +17,7 @@ struct SummaryView: View {
             
             Spacer()
             
-            HabitSummaryView(viewModel: habitViewModel)
-            
+            HabitSummaryView(viewModelHabit: habitViewModel, viewModelCalendar: calendarViewModel)
         }
     }
 }
@@ -83,33 +82,34 @@ struct MonthView: View {
 }
 
 struct HabitSummaryView: View {
-    @ObservedObject var viewModel: HabitViewModel
+    @ObservedObject var viewModelHabit: HabitViewModel
+    @ObservedObject var viewModelCalendar: CalendarViewModel  // Pass this from SummaryView
     @State private var selectedSegment = 0
 
     var body: some View {
         VStack {
             Picker("Habits", selection: $selectedSegment) {
-                ForEach(0..<viewModel.habits.count, id: \.self) { index in
-                    Text(viewModel.habits[index].name).tag(index)
+                ForEach(0..<viewModelHabit.habits.count, id: \.self) { index in
+                    Text(viewModelHabit.habits[index].name).tag(index)
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
 
-            // Display details based on the selected habit
-            if !viewModel.habits.isEmpty {
-                HStack{
-                    DaysDoneInMontView(viewModel: CalendarViewModel())
-                    TotalCompletionsView(totalCompletions: viewModel.habits[selectedSegment].totalCompletions)
+            if !viewModelHabit.habits.isEmpty {
+                HStack {
+                    DaysDoneInMonthView(viewModel: viewModelCalendar, dayCompleted: viewModelHabit.habits[selectedSegment].dayCompleted)
+                    TotalCompletionsView(totalCompletions: viewModelHabit.habits[selectedSegment].totalCompletions)
                 }
-                HStack{
-                    StreakCountView(streakCount: viewModel.habits[selectedSegment].streakCount)
-                    LongestStreakView(longestStreak: viewModel.habits[selectedSegment].longestStreak)
+                HStack {
+                    StreakCountView(streakCount: viewModelHabit.habits[selectedSegment].streakCount)
+                    LongestStreakView(longestStreak: viewModelHabit.habits[selectedSegment].longestStreak)
                 }
             }
         }
     }
 }
+
 
 struct StreakCountView: View {
     var streakCount: Int
@@ -173,12 +173,24 @@ struct TotalCompletionsView: View {
     
 }
 
-struct DaysDoneInMontView: View {
+struct DaysDoneInMonthView: View {
     @ObservedObject var viewModel: CalendarViewModel
+    var dayCompleted: [Date]
     
     var body: some View {
-        // Your card implementation goes here
-        Text("0 days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
+        // Compute the count of dates in the current month
+        let daysCompletedInMonth = dayCompleted.filter { date in
+            let monthYearFormatter = DateFormatter()
+            monthYearFormatter.dateFormat = "yyyy MM"
+            return monthYearFormatter.string(from: date) == monthYearFormatter.string(from: viewModel.currentMonth)
+        }.count
+
+        // Display the count and the month name
+        VStack {
+            Text("\(daysCompletedInMonth)")
+                .font(.largeTitle)
+            Text("days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
+        }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.blue)
             .cornerRadius(10)

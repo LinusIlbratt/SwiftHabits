@@ -19,6 +19,7 @@ class HabitViewModel: ObservableObject {
     @Published var frequency: String = "Daily"
     @Published var clockReminder: String = ""
     @Published var streakCount: Int = 0
+    @Published var dayCompleted: [Date] = []
     @Published var daysSelected: [Bool] = [false, false, false, false, false, false, false]  // default all days to false
     
     private var db = Firestore.firestore()
@@ -161,7 +162,7 @@ class HabitViewModel: ObservableObject {
         }
         var habit = habits[index]
 
-        // Check if the streak was already updated today
+        // Check if the habit was already marked as done today
         if habit.isDone {
             print("Habit already done today \(habitId)")
             return
@@ -172,9 +173,9 @@ class HabitViewModel: ObservableObject {
         habit.streakCount += 1
         habit.isDone = true
         habit.progress = 1
-        habit.dayCompleted = [Date()]
+        habit.dayCompleted.append(Date())  // Append the new date instead of replacing
 
-        // update longest streak within the same habit modification
+        // Update the longest streak within the same habit modification
         if habit.streakCount > habit.longestStreak {
             habit.longestStreak = habit.streakCount
         }
@@ -184,16 +185,15 @@ class HabitViewModel: ObservableObject {
         // Update Firestore
         updateCompletedHabitToFirestore(habitId: habitId, habit: habit)
     }
-    
+
     func updateCompletedHabitToFirestore(habitId: String, habit: Habit) {
         let habitRef = db.collection("habits").document(habitId)
         habitRef.updateData([
             "streakCount": habit.streakCount,
-            "lastStreakUpdate": habit.isDone,
             "progress": habit.progress,
             "totalCompletions": habit.totalCompletions,
             "longestStreak": habit.longestStreak,
-            "dayCompleted": habit.dayCompleted,
+            "dayCompleted": habit.dayCompleted.map { Timestamp(date: $0) },  // Ensure correct date conversion
             "isDone": habit.isDone
         ]) { error in
             if let error = error {
