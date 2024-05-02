@@ -10,20 +10,25 @@ import SwiftUI
 struct SummaryView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
     @StateObject private var habitViewModel = HabitViewModel()
+    @State private var selectedSegment = 0
 
     var body: some View {
-        VStack {
-            CalendarView(viewModel: calendarViewModel)
-            
-            Spacer()
-            
-            HabitSummaryView(viewModelHabit: habitViewModel, viewModelCalendar: calendarViewModel)
+            VStack {
+                if !habitViewModel.habits.isEmpty {
+                    CalendarView(viewModel: calendarViewModel, dayCompleted: habitViewModel.habits[selectedSegment].dayCompleted)
+                } else {
+                    CalendarView(viewModel: calendarViewModel, dayCompleted: [])
+                }
+                
+                Spacer()
+                
+                HabitSummaryView(viewModelHabit: habitViewModel, viewModelCalendar: calendarViewModel, selectedSegment: $selectedSegment)
+            }
         }
     }
-}
-
 struct CalendarView: View {
     @ObservedObject var viewModel: CalendarViewModel
+    var dayCompleted: [Date]  // Now properly passed from SummaryView
 
     var body: some View {
         VStack {
@@ -40,18 +45,20 @@ struct CalendarView: View {
                 }
             }
             
-            MonthView(viewModel: viewModel)
+            MonthView(viewModel: viewModel, dayCompleted: dayCompleted)
         }
     }
 }
 
 struct MonthView: View {
     @ObservedObject var viewModel: CalendarViewModel
+    var dayCompleted: [Date]
 
     var body: some View {
         let metadata = viewModel.monthMetadata()
         let firstDayWeekday = viewModel.firstDayOfWeekday()
         let weekdays = viewModel.weekdays
+        let firstDayOfMonth = metadata.firstDay ?? Date()
 
         return VStack {
             // Weekday headers
@@ -63,17 +70,17 @@ struct MonthView: View {
                 }
             }
 
-            // day grid
+            // Day grid
             LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
                 ForEach(0..<42, id: \.self) { index in
                     if index < firstDayWeekday || index >= firstDayWeekday + metadata.numberOfDays {
                         Text("")
                             .frame(width: 40, height: 40)
                     } else {
-                        Text("\((index - firstDayWeekday) + 1)")
-                            .frame(width: 40, height: 40)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(5)
+                        let dayOffset = index - firstDayWeekday
+                        let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: firstDayOfMonth)!
+
+                        DayCell(date: date, isActive: dayCompleted.contains { Calendar.current.isDate($0, inSameDayAs: date) })
                     }
                 }
             }
@@ -81,10 +88,23 @@ struct MonthView: View {
     }
 }
 
+struct DayCell: View {
+    var date: Date
+    var isActive: Bool
+
+    var body: some View {
+        Text("\(Calendar.current.component(.day, from: date))")
+            .frame(width: 40, height: 40)
+            .background(isActive ? Color.green : Color.clear)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+    }
+}
+
 struct HabitSummaryView: View {
     @ObservedObject var viewModelHabit: HabitViewModel
-    @ObservedObject var viewModelCalendar: CalendarViewModel  // Pass this from SummaryView
-    @State private var selectedSegment = 0
+    @ObservedObject var viewModelCalendar: CalendarViewModel
+    @Binding var selectedSegment: Int
 
     var body: some View {
         VStack {
@@ -97,6 +117,7 @@ struct HabitSummaryView: View {
             .padding()
 
             if !viewModelHabit.habits.isEmpty {
+                // Ensure that the dayCompleted data from the correct habit is passed
                 HStack {
                     DaysDoneInMonthView(viewModel: viewModelCalendar, dayCompleted: viewModelHabit.habits[selectedSegment].dayCompleted)
                     TotalCompletionsView(totalCompletions: viewModelHabit.habits[selectedSegment].totalCompletions)
@@ -109,6 +130,7 @@ struct HabitSummaryView: View {
         }
     }
 }
+
 
 
 struct StreakCountView: View {
