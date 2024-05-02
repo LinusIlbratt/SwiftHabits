@@ -93,12 +93,15 @@ struct DayCell: View {
     var isActive: Bool
 
     var body: some View {
-        Text("\(Calendar.current.component(.day, from: date))")
-            .frame(width: 40, height: 40)
-            .background(isActive ? Color.green : Color.clear)
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.gray, lineWidth: 1))
-    }
+            Text("\(Calendar.current.component(.day, from: date))")
+                .frame(width: 40, height: 40)
+                .background(isActive ? Color.green : Color.clear)
+                .cornerRadius(10) // Apply rounded corners directly to the background
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10) // Apply rounded rectangle overlay
+                        .stroke(Color.gray, lineWidth: 0.1)
+                )
+        }
 }
 
 struct HabitSummaryView: View {
