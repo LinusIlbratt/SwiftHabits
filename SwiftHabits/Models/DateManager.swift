@@ -7,33 +7,59 @@
 
 import SwiftUI
 
+import Foundation
+
+struct MonthMetadata {
+    var firstDay: Date
+    var numberOfDays: Int
+}
+
 class DateManager {
-    private let calendar = Calendar.current
-    var forcedDayIndex: Int?
-    private let dateFormatter: DateFormatter
-    private let dayDateFormatter: DateFormatter
-    private let dateTimeFormatter: DateFormatter // New formatter for date and time
+     let calendar: Calendar
+     var forcedDayIndex: Int?
+     let dateFormatter: DateFormatter
+     let dayDateFormatter: DateFormatter
+     let dateTimeFormatter: DateFormatter
 
     init() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "sv_SE")
+        calendar.timeZone = TimeZone.current
+        self.calendar = calendar
+
         dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d" // Only the day of the month
+        dateFormatter.dateFormat = "d"
+        dateFormatter.locale = Locale(identifier: "sv_SE")
+        dateFormatter.timeZone = TimeZone.current
 
         dayDateFormatter = DateFormatter()
         dayDateFormatter.dateFormat = "MM/dd/yyyy"
+        dayDateFormatter.locale = Locale(identifier: "sv_SE")
+        dayDateFormatter.timeZone = TimeZone.current
 
-        dateTimeFormatter = DateFormatter() // Initialize the new DateFormatter
-        dateTimeFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss" // Include time
-        dateTimeFormatter.timeZone = TimeZone.current // Ensure it uses the local time zone
+        dateTimeFormatter = DateFormatter()
+        dateTimeFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
+        dateTimeFormatter.locale = Locale(identifier: "sv_SE")
+        dateTimeFormatter.timeZone = TimeZone.current
     }
+
+    func monthMetadata(for baseDate: Date) -> MonthMetadata {
+            let components = calendar.dateComponents([.year, .month], from: baseDate)
+            let startOfMonth = calendar.date(from: components)!
+            let numberOfDays = calendar.range(of: .day, in: .month, for: startOfMonth)!.count
+            return MonthMetadata(firstDay: startOfMonth, numberOfDays: numberOfDays)
+        }
+
+    func changeMonth(for date: Date, by months: Int) -> Date {
+            return calendar.date(byAdding: .month, value: months, to: date) ?? date
+        }
 
     func weekDates(startingFrom startDate: Date) -> [String] {
         let weekday = calendar.component(.weekday, from: startDate)
-        // Calculate the start of the week with Monday as the first day of the week
         guard let startOfWeek = calendar.date(byAdding: .day, value: -((weekday + 5) % 7), to: startDate) else {
             return []
         }
-
-        return (0..<7).compactMap { offset in
+        return (0..<7).map { offset in
             let dateToAdd = calendar.date(byAdding: .day, value: offset, to: startOfWeek)!
             return dateFormatter.string(from: dateToAdd)
         }
@@ -44,7 +70,6 @@ class DateManager {
             return forcedIndex
         }
         let weekday = calendar.component(.weekday, from: date)
-        // Adjust for array starting with Monday as 0
         return (weekday + 5) % 7
     }
     
@@ -53,12 +78,12 @@ class DateManager {
     }
     
     func habitDayCreation() -> String {
-        let dateCreatedString = dayDateFormatter.string(from: Date())
-        return dateCreatedString
+        return dayDateFormatter.string(from: Date())
     }
 
     func formattedDateTime(for date: Date) -> String {
-        return dateTimeFormatter.string(from: date) // Use the new formatter to get string
+        return dateTimeFormatter.string(from: date)
     }
 }
+
 
