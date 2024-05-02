@@ -58,7 +58,7 @@ struct MonthView: View {
         let metadata = viewModel.monthMetadata()
         let firstDayWeekday = viewModel.firstDayOfWeekday()
         let weekdays = viewModel.weekdays
-        let firstDayOfMonth = metadata.firstDay ?? Date()
+        let firstDayOfMonth = metadata.firstDay 
 
         return VStack {
             // Weekday headers
