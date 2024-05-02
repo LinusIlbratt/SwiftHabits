@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "%@" : {
 
     },
@@ -36,6 +39,9 @@
           }
         }
       }
+    },
+    "0 days done in %@" : {
+
     },
     "8:00" : {
 
@@ -86,7 +92,7 @@
         }
       }
     },
-    "Card View" : {
+    "Best streak:" : {
 
     },
     "Choose Image" : {
@@ -98,6 +104,9 @@
           }
         }
       }
+    },
+    "Current streak:" : {
+
     },
     "Daily Goals" : {
 
@@ -294,6 +303,9 @@
           }
         }
       }
+    },
+    "Total days done:" : {
+
     },
     "Tues" : {
       "extractionState" : "manual",

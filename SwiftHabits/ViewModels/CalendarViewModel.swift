@@ -22,6 +22,13 @@ class CalendarViewModel: ObservableObject {
         formatter.locale = Locale(identifier: "sv_SE")  // Ensure it's set to Swedish locale
         return formatter
     }
+    
+    var monthOnlyFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMMM"  // Format for the month name only
+            formatter.locale = Locale(identifier: "en_SV")  // Ensure it's using English or adjust as necessary
+            return formatter
+        }
 
     func moveToNextMonth() {
         currentMonth = dateManager.changeMonth(for: currentMonth, by: 1)

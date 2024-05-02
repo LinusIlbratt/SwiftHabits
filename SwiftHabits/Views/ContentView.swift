@@ -23,7 +23,7 @@ struct ContentView: View {
 
             
             NavigationStack {
-                // call view
+                SummaryView()
             }
             .tabItem {
                 Label("Progress", systemImage: "chart.bar.xaxis")

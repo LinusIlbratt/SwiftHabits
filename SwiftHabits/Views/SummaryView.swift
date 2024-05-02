@@ -99,7 +99,7 @@ struct HabitSummaryView: View {
             // Display details based on the selected habit
             if !viewModel.habits.isEmpty {
                 HStack{
-                    CardView()
+                    DaysDoneInMontView(viewModel: CalendarViewModel())
                     TotalCompletionsView(totalCompletions: viewModel.habits[selectedSegment].totalCompletions)
                 }
                 HStack{
@@ -173,10 +173,12 @@ struct TotalCompletionsView: View {
     
 }
 
-struct CardView: View {
+struct DaysDoneInMontView: View {
+    @ObservedObject var viewModel: CalendarViewModel
+    
     var body: some View {
         // Your card implementation goes here
-        Text("Card View")
+        Text("0 days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.blue)
             .cornerRadius(10)
