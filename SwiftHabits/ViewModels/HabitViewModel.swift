@@ -60,7 +60,7 @@ class HabitViewModel: ObservableObject {
     func calculateMissedDaysForAllHabits() {
         let currentDate = Date()
         for index in habits.indices {
-            if let lastCompletionDate = habits[index].dayCompleted.last {
+            if habits[index].dayCompleted.last != nil {
                 let missedDays = calculateMissedActiveDays(for: habits[index], until: currentDate)
                 print("Missed active days for habit \(habits[index].name): \(missedDays)")
 
@@ -210,13 +210,13 @@ class HabitViewModel: ObservableObject {
     }
 
     func getLastKnownDay() -> Date? {
-       // return UserDefaults.standard.object(forKey: "lastKnownDay") as? Date
-        let calendar = Calendar.current
-        return calendar.date(from: DateComponents(year: 2024, month: 4, day: 28))
+        return UserDefaults.standard.object(forKey: "lastKnownDay") as? Date
+       // let calendar = Calendar.current
+       // return calendar.date(from: DateComponents(year: 2024, month: 4, day: 28))
     }
     
     func checkForDayChange() {
-      // let dateManager = DateManager() // Assuming DateManager is accessible here
+        let dateManager = DateManager() // Assuming DateManager is accessible here
         let currentDay = Calendar.current.startOfDay(for: Date())
         print("Current Day: \(dateManager.formattedDateTime(for: currentDay))")
 
