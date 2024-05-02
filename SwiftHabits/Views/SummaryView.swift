@@ -19,15 +19,6 @@ struct SummaryView: View {
             
             HabitSummaryView(viewModel: habitViewModel)
             
-            HStack{
-                CardView()
-                CardView()
-            }
-            
-            HStack{
-                CardView()
-                CardView()
-            }
         }
     }
 }
@@ -107,12 +98,80 @@ struct HabitSummaryView: View {
 
             // Display details based on the selected habit
             if !viewModel.habits.isEmpty {
-                Text("Selected Habit: \(viewModel.habits[selectedSegment].name)")
+                HStack{
+                    CardView()
+                    TotalCompletionsView(totalCompletions: viewModel.habits[selectedSegment].totalCompletions)
+                }
+                HStack{
+                    StreakCountView(streakCount: viewModel.habits[selectedSegment].streakCount)
+                    LongestStreakView(longestStreak: viewModel.habits[selectedSegment].longestStreak)
+                }
             }
         }
     }
 }
 
+struct StreakCountView: View {
+    var streakCount: Int
+
+    var body: some View {
+        VStack(spacing: 4) { // Reduced spacing between the texts
+            Text("Current streak:")
+                .foregroundColor(.white)
+                .font(.subheadline) // Optional styling for the label
+            
+            Text("\(streakCount)")
+                .font(.headline)
+                .foregroundColor(.white)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+        .background(Color.blue) // Background color for the entire card
+        .cornerRadius(10) // Rounded corners for the card
+        .padding() // Padding around the card
+    }
+}
+
+struct LongestStreakView: View {
+    var longestStreak: Int
+    
+    var body: some View {
+        VStack(spacing: 4) {
+        Text("Best streak:")
+            .font(.subheadline)
+            .foregroundColor(.white)
+            
+        Text("\(longestStreak)")
+            .font(.headline)
+            .foregroundColor(.white)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+        .background(Color.blue) // Background color for the entire card
+        .cornerRadius(10) // Rounded corners for the card
+        .padding() // Padding around the card
+    }
+        
+}
+
+struct TotalCompletionsView: View {
+    var totalCompletions: Int
+    
+    var body: some View {
+        VStack(spacing: 4) {
+        Text("Total days done:")
+            .font(.subheadline)
+            .foregroundColor(.white)
+            
+        Text("\(totalCompletions)")
+            .font(.headline)
+            .foregroundColor(.white)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+        .background(Color.blue) // Background color for the entire card
+        .cornerRadius(10) // Rounded corners for the card
+        .padding() // Padding around the card
+    }
+    
+}
 
 struct CardView: View {
     var body: some View {
