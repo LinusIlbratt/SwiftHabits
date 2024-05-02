@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1B0A71D92BD80E880048DD27 /* CustomModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0A71D82BD80E880048DD27 /* CustomModifiers.swift */; };
 		1B1EA0272BD645BA00D202CE /* SwiftHabitsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0262BD645BA00D202CE /* SwiftHabitsApp.swift */; };
-		1B1EA0292BD645BA00D202CE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0282BD645BA00D202CE /* ContentView.swift */; };
+		1B1EA0292BD645BA00D202CE /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0282BD645BA00D202CE /* RootView.swift */; };
 		1B1EA02B2BD645BA00D202CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA02A2BD645BA00D202CE /* Assets.xcassets */; };
 		1B1EA02E2BD645BA00D202CE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B1EA02D2BD645BA00D202CE /* Preview Assets.xcassets */; };
 		1B1EA0382BD645BB00D202CE /* SwiftHabitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1EA0372BD645BB00D202CE /* SwiftHabitsTests.swift */; };
@@ -30,6 +30,7 @@
 		1BE408B52BD7A21A00AA212B /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B42BD7A21A00AA212B /* Habit.swift */; };
 		1BE408B92BD7AA1100AA212B /* HabitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */; };
 		1BF65ADA2BE358F600869BBC /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF65AD92BE358F600869BBC /* CalendarViewModel.swift */; };
+		1BF65ADC2BE3AF2000869BBC /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF65ADB2BE3AF2000869BBC /* UserViewModel.swift */; };
 		1BFE5A252BD9139A0046B116 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BFE5A242BD9139A0046B116 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,7 +55,7 @@
 		1B0A71D82BD80E880048DD27 /* CustomModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModifiers.swift; sourceTree = "<group>"; };
 		1B1EA0232BD645BA00D202CE /* SwiftHabits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftHabits.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B1EA0262BD645BA00D202CE /* SwiftHabitsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHabitsApp.swift; sourceTree = "<group>"; };
-		1B1EA0282BD645BA00D202CE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1B1EA0282BD645BA00D202CE /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		1B1EA02A2BD645BA00D202CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1B1EA02D2BD645BA00D202CE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1B1EA0332BD645BB00D202CE /* SwiftHabitsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftHabitsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +73,7 @@
 		1BE408B42BD7A21A00AA212B /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewModel.swift; sourceTree = "<group>"; };
 		1BF65AD92BE358F600869BBC /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		1BF65ADB2BE3AF2000869BBC /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		1BFE5A242BD9139A0046B116 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -171,7 +173,7 @@
 		1B1EA0502BD645D800D202CE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1B1EA0282BD645BA00D202CE /* ContentView.swift */,
+				1B1EA0282BD645BA00D202CE /* RootView.swift */,
 				1B1EA0612BD6697700D202CE /* HabitsView.swift */,
 				1BE408B22BD774CF00AA212B /* NewHabitView.swift */,
 				1B0A71D82BD80E880048DD27 /* CustomModifiers.swift */,
@@ -186,6 +188,7 @@
 				1B1EA0632BD66BDA00D202CE /* WeekdayPickerViewModel.swift */,
 				1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */,
 				1BF65AD92BE358F600869BBC /* CalendarViewModel.swift */,
+				1BF65ADB2BE3AF2000869BBC /* UserViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -366,13 +369,14 @@
 			files = (
 				1BF65ADA2BE358F600869BBC /* CalendarViewModel.swift in Sources */,
 				1BE408B32BD774CF00AA212B /* NewHabitView.swift in Sources */,
-				1B1EA0292BD645BA00D202CE /* ContentView.swift in Sources */,
+				1B1EA0292BD645BA00D202CE /* RootView.swift in Sources */,
 				1B1EA0662BD6796700D202CE /* DateManager.swift in Sources */,
 				1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */,
 				1B1EA0272BD645BA00D202CE /* SwiftHabitsApp.swift in Sources */,
 				1BE408B92BD7AA1100AA212B /* HabitViewModel.swift in Sources */,
 				1B0A71D92BD80E880048DD27 /* CustomModifiers.swift in Sources */,
 				1B1EA0642BD66BDA00D202CE /* WeekdayPickerViewModel.swift in Sources */,
+				1BF65ADC2BE3AF2000869BBC /* UserViewModel.swift in Sources */,
 				1BFE5A252BD9139A0046B116 /* AppDelegate.swift in Sources */,
 				1BE408B52BD7A21A00AA212B /* Habit.swift in Sources */,
 				1B631D6A2BE2945B00CCC36C /* SummaryView.swift in Sources */,

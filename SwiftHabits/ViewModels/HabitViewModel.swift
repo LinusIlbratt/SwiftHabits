@@ -9,6 +9,7 @@ import SwiftUI
 import UserNotifications
 import Firebase
 import FirebaseFirestoreSwift
+import FirebaseAuth
 
 class HabitViewModel: ObservableObject {
     @Published var habits: [Habit] = []
@@ -25,6 +26,9 @@ class HabitViewModel: ObservableObject {
     private var db = Firestore.firestore()
     private var listener: ListenerRegistration?
     private let dateManager = DateManager()
+    private var userId: String? {
+        Auth.auth().currentUser?.uid
+    }
 
     init() {
         loadHabits()     
@@ -36,24 +40,29 @@ class HabitViewModel: ObservableObject {
 
     
     func loadHabits() {
-        db.collection("habits").getDocuments { snapshot, error in
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("Error: User is not logged in")
+            return
+        }
+
+        let userHabitsPath = db.collection("users").document(userId).collection("habits")
+        
+        userHabitsPath.getDocuments { snapshot, error in
             if let error = error {
                 print("Error getting documents: \(error)")
                 return
             }
             guard let documents = snapshot?.documents else {
-                print("No documents")
+                print("No documents found")
                 return
             }
             self.habits = documents.compactMap { document -> Habit? in
                 try? document.data(as: Habit.self)
             }
+
             self.checkForDayChange()
             self.updateFilteredHabits() // Ensure to filter the habits after loading
-
-            // After habits are loaded, calculate missed days
             self.calculateMissedDaysForAllHabits()
-            
         }
     }
 
@@ -74,12 +83,16 @@ class HabitViewModel: ObservableObject {
     }
 
     func updateTotalAttemptsForHabit(habit: Habit) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("Error: User is not logged in")
+            return
+        }
         guard let habitId = habit.id else {
             print("Error: Habit ID is nil")
             return
         }
-        let habitRef = db.collection("habits").document(habitId)
-        habitRef.updateData([
+        let userHabitRef = Firestore.firestore().collection("users").document(userId).collection("habits").document(habitId)
+        userHabitRef.updateData([
             "totalAttempts": habit.totalAttempts
         ]) { error in
             if let error = error {
@@ -89,6 +102,7 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
+
 
 
     func updateFilteredHabits() {
@@ -105,6 +119,11 @@ class HabitViewModel: ObservableObject {
 
     
     func addHabit() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("Error: User is not logged in")
+            return
+        }
+
         let newId = UUID().uuidString  // Generate a unique ID
         let dateCreationString = dateManager.habitDayCreation()
         let newHabit = Habit(id: newId,
@@ -117,10 +136,10 @@ class HabitViewModel: ObservableObject {
                              daysActive: daysSelected,
                              dayCreated: dateCreationString)
 
-        // Set the document in Firestore with the newId as the document ID
-        let documentRef = db.collection("habits").document(newId)
+        // Set the document in Firestore under the user's 'habits' sub-collection
+        let userHabitPath = db.collection("users").document(userId).collection("habits").document(newId)
         do {
-            try documentRef.setData(from: newHabit) { error in
+            try userHabitPath.setData(from: newHabit) { error in
                 if let error = error {
                     print("Error adding document: \(error)")
                 } else {
@@ -137,25 +156,38 @@ class HabitViewModel: ObservableObject {
         }
     }
 
+
     
     func saveToFirestore(habit: Habit, completion: @escaping (Bool) -> Void) {
-            let collection = Firestore.firestore().collection("habits")
-            do {
-                let _ = try collection.addDocument(from: habit) { error in
-                    if let error = error {
-                        print("Error adding document: \(error)")
-                        completion(false)
-                    } else {
-                        completion(true)
-                    }
-                }
-            } catch {
-                print("Error serializing habit: \(error)")
-                completion(false)
-            }
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("Error: User is not logged in")
+            completion(false)
+            return
         }
+
+        let userHabitPath = Firestore.firestore().collection("users").document(userId).collection("habits")
+        do {
+            let _ = try userHabitPath.addDocument(from: habit) { error in
+                if let error = error {
+                    print("Error adding document: \(error)")
+                    completion(false)
+                } else {
+                    completion(true)
+                }
+            }
+        } catch {
+            print("Error serializing habit: \(error)")
+            completion(false)
+        }
+    }
+
+    
     
     func completeHabit(to habitId: String) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("User not logged in")
+            return
+        }
         guard let index = habits.firstIndex(where: { $0.id == habitId }) else {
             print("Habit not found")
             return
@@ -173,7 +205,7 @@ class HabitViewModel: ObservableObject {
         habit.streakCount += 1
         habit.isDone = true
         habit.progress = 1
-        habit.dayCompleted.append(Date())  // Append the new date instead of replacing
+        habit.dayCompleted.append(Date())  // Append the new date
 
         // Update the longest streak within the same habit modification
         if habit.streakCount > habit.longestStreak {
@@ -183,11 +215,11 @@ class HabitViewModel: ObservableObject {
         habits[index] = habit  // Update the array to reflect the change
 
         // Update Firestore
-        updateCompletedHabitToFirestore(habitId: habitId, habit: habit)
+        updateCompletedHabitToFirestore(userId: userId, habitId: habitId, habit: habit)
     }
 
-    func updateCompletedHabitToFirestore(habitId: String, habit: Habit) {
-        let habitRef = db.collection("habits").document(habitId)
+    func updateCompletedHabitToFirestore(userId: String, habitId: String, habit: Habit) {
+        let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
         habitRef.updateData([
             "streakCount": habit.streakCount,
             "progress": habit.progress,
@@ -197,12 +229,13 @@ class HabitViewModel: ObservableObject {
             "isDone": habit.isDone
         ]) { error in
             if let error = error {
-                print("Error updating streak count: \(error)")
+                print("Error updating habit: \(error)")
             } else {
-                print("Streak count successfully updated for habit ID: \(habitId)")
+                print("Habit successfully updated for habit ID: \(habitId)")
             }
         }
     }
+
     
     func storeLastKnownDay() {
         let today = Calendar.current.startOfDay(for: Date()) // Normalize to midnight
@@ -253,21 +286,34 @@ class HabitViewModel: ObservableObject {
 
     
     func updateHabitResetToFirestore(_ habit: Habit) {
-        guard let habitId = habit.id else { return }
-            let habitRef = db.collection("habits").document(habitId)
-            habitRef.updateData([
-                "isDone": habit.isDone,
-                "progress": habit.progress
-            ]) { error in
-                if let error = error {
-                    print("Error updating habit: \(error)")
-                } else {
-                    print("Habit successfully updated with reset values for habit ID: \(habitId)")
-                }
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("Error: User is not logged in")
+            return
+        }
+        guard let habitId = habit.id else {
+            print("Error: Habit ID is nil")
+            return
+        }
+        let userHabitRef = Firestore.firestore().collection("users").document(userId).collection("habits").document(habitId)
+        userHabitRef.updateData([
+            "isDone": habit.isDone,
+            "progress": habit.progress
+        ]) { error in
+            if let error = error {
+                print("Error updating habit: \(error)")
+            } else {
+                print("Habit successfully updated with reset values for habit ID: \(habitId)")
             }
+        }
     }
+
     
     func updateTotalAttempts() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("Error: User is not logged in")
+            return
+        }
+
         let currentWeekday = Calendar.current.component(.weekday, from: Date())
         let todayIndex = (currentWeekday + 5) % 7
         
@@ -279,16 +325,16 @@ class HabitViewModel: ObservableObject {
             
             // check if today is an active day for the habit
             if habit.daysActive.indices.contains(todayIndex) && habit.daysActive[todayIndex] {
-                // increase total attempts only if its an active day
+                // increase total attempts only if it's an active day
                 habit.totalAttempts += 1
-                // update to firestore
+                // update to Firestore using the user-specific path
                 
-                let habitRef = db.collection("habits").document(habitId)
-                habitRef.updateData([
+                let userHabitRef = Firestore.firestore().collection("users").document(userId).collection("habits").document(habitId)
+                userHabitRef.updateData([
                     "totalAttempts": habit.totalAttempts
                 ]) { error in
                     if let error = error {
-                        print("Error updating habit: \(error)")
+                        print("Error updating total attempts for Habit ID: \(habitId): \(error)")
                     } else {
                         print("Total attempts successfully updated for Habit ID: \(habitId)")
                     }
@@ -296,6 +342,7 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
+
     
     func calculateMissedActiveDays(for habit: Habit, until currentDate: Date) -> Int {
         guard let lastCompletionDate = habit.dayCompleted.last else {

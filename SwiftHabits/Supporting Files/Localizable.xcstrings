@@ -111,6 +111,9 @@
     "days done in %@" : {
 
     },
+    "Email" : {
+
+    },
     "Enter habit name" : {
       "localizations" : {
         "sv" : {
@@ -196,6 +199,9 @@
         }
       }
     },
+    "Password" : {
+
+    },
     "Progress" : {
       "localizations" : {
         "sv" : {
@@ -252,6 +258,12 @@
           }
         }
       }
+    },
+    "Sign In" : {
+
+    },
+    "Sign Up" : {
+
     },
     "Sun" : {
       "extractionState" : "manual",
