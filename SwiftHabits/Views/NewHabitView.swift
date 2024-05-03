@@ -10,19 +10,13 @@ import SwiftUI
 struct NewHabitView: View {
     @ObservedObject var viewModel: HabitViewModel
     @Binding var isPresented: Bool
-    @State private var clockReminder = ""
-    @State private var selectedIcon = ""
-    @State private var frequency = ""
-    @State private var daysSelected = Array(repeating: false, count: 7)
-    @State private var selectAllDays = false
-    
+
     var icons = [
         "flame.fill", "bolt.fill", "moon.fill", "sun.max.fill",
         "cloud.fill", "snow", "wind", "tornado"
     ]
     
     let frequencyOptions = ["Daily", "Weekly", "Monthly"]
-    
     let days = ["M", "T", "W", "T", "F", "S", "S"]
     
     var body: some View {
@@ -43,7 +37,7 @@ struct NewHabitView: View {
                 DayPickerView(daysSelected: $viewModel.daysSelected, days: days)
                 
                 // every day label and toggle
-                EveryDayToggleView(selectAllDays: $selectAllDays, daysSelected: $daysSelected)
+                EveryDayToggleView(selectAllDays: $viewModel.selectAllDays, daysSelected: $viewModel.daysSelected)
                 
                 // time reminder and input
                 TimeReminderInputView(clockReminder: $viewModel.clockReminder)
@@ -113,13 +107,13 @@ struct DayPickerView: View {
     let days: [String]
 
     var body: some View {
-        HStack {
-            ForEach(0..<days.count, id: \.self) { index in
-                DayButton(isSelected: $daysSelected[index], label: days[index])
+            HStack {
+                ForEach(0..<days.count, id: \.self) { index in
+                    DayButton(isSelected: $daysSelected[index], label: days[index])
+                }
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
-    }
 }
 
 

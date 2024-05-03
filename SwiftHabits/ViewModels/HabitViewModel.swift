@@ -17,11 +17,12 @@ class HabitViewModel: ObservableObject {
     @Published var habitName: String = ""
     @Published var iconName: String = ""
     @Published var selectedIcon: String = ""
-    @Published var frequency: String = "Daily"
+    @Published var frequency: String = ""
     @Published var clockReminder: String = ""
     @Published var streakCount: Int = 0
     @Published var dayCompleted: [Date] = []
-    @Published var daysSelected: [Bool] = [false, false, false, false, false, false, false]  // default all days to false
+    @Published var daysSelected: [Bool] = Array(repeating: false, count: 7)
+    @Published var selectAllDays: Bool = false  // default all days to false
     
     private var db = Firestore.firestore()
     private var listener: ListenerRegistration?
