@@ -75,7 +75,7 @@
 		1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewModel.swift; sourceTree = "<group>"; };
 		1BF65AD92BE358F600869BBC /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		1BF65ADB2BE3AF2000869BBC /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
-		1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationService.swift; path = SwiftHabits/Views/NotificationService.swift; sourceTree = SOURCE_ROOT; };
+		1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationService.swift; path = SwiftHabits/Service/NotificationService.swift; sourceTree = SOURCE_ROOT; };
 		1BFE5A242BD9139A0046B116 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -139,7 +139,7 @@
 				1B1EA0512BD645EB00D202CE /* ViewModels */,
 				1B1EA0522BD645F200D202CE /* Models */,
 				1B1EA0532BD645F900D202CE /* Utilities */,
-				1B1EA0542BD6460100D202CE /* Services */,
+				1BFDA1D02BE4AF8C00D6EB5F /* Service */,
 				1B1EA0552BD6460700D202CE /* Supporting Files */,
 				1B1EA02A2BD645BA00D202CE /* Assets.xcassets */,
 				1B1EA02C2BD645BA00D202CE /* Preview Content */,
@@ -211,20 +211,20 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		1B1EA0542BD6460100D202CE /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
 		1B1EA0552BD6460700D202CE /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
 				1B1EA05D2BD660A700D202CE /* Localizable.xcstrings */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1BFDA1D02BE4AF8C00D6EB5F /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
