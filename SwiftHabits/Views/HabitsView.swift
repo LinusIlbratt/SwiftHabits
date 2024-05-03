@@ -54,11 +54,14 @@ struct GoalCardView: View {
             VStack(alignment: .trailing, spacing: 10) {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Daily Goals")
-                        .font(.headline)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
 
                     // Dynamically display the number of completed habits out of the total
                     Text("\(viewModel.filteredHabits.filter { $0.progress == 1.0 }.count) of \(viewModel.filteredHabits.count) completed")
-                        .font(.subheadline)
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.9))
                 }
                 
                 VStack(alignment: .trailing, spacing: 0) {
@@ -68,25 +71,27 @@ struct GoalCardView: View {
                     let progressPercentage = progressTotal > 0 ? (progressValue / progressTotal) * 100 : 0
                     
                     ProgressView(value: progressValue, total: progressTotal)
-                        .progressViewStyle(LinearProgressViewStyle())
-                        .frame(width: 300, height: 20)
-                    
+                        .progressViewStyle(LinearProgressViewStyle(tint: Color.white))
+                        .scaleEffect(x: 1, y: 2, anchor: .center)
+                        .frame(width: 330, height: 20)
+                        .cornerRadius(20)
                     Text("\(Int(progressPercentage))%")
-                        .font(.caption)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
                 }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
-            .background(Color.white)
-            .cornerRadius(15)
-            .shadow(radius: 5)
+            .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing))
+            .cornerRadius(20)
             .frame(width: 350, height: 80)
 
             Image("icon_bear") // Ensure this image is available in your assets
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .offset(y: -50)
+                .offset(y: -60)
         }
         .padding(.top, 20)
     }
@@ -104,6 +109,7 @@ struct HabitListView: View {
             List {
                 ForEach($viewModel.filteredHabits, id: \.id) { $habit in
                     HabitCardView(habit: $habit)
+                        .listRowSeparator(.hidden)
                 }
             }
             .listStyle(PlainListStyle())
@@ -132,11 +138,11 @@ struct HabitCardView: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(habit.name)
                     .font(.headline)
-                if habit.frequency == "Daily" {
-                    Text("Repeat every day")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
+                
+                Text("Reminder at")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
                 Text(habit.clockReminder)
                     .font(.subheadline)
                     .foregroundColor(.gray)
@@ -157,9 +163,11 @@ struct HabitCardView: View {
                 .frame(width: 50, height: 50)
                 .padding(.trailing, 10)
         }
-        .frame(height: 80)
+        .frame(height: 100)
         .background(Color.white)
         .cornerRadius(10)
+        .shadow(color: Color.black.opacity(0.1), radius: 12)
+       // .shadow(color: Color.blue.opacity(0.2), radius: 20, x: 10, y: 10)
         .onTapGesture {
             withAnimation {
                 habit.progress = 1.0
@@ -218,8 +226,8 @@ struct DayButtonView: View {
                 .font(.system(size: 14))
                 .foregroundColor(isSelected ? .white : .secondary)
         }
-        .frame(minWidth: 44, minHeight: 60)
-        .background(isSelected ? Color.blue.opacity(0.8) : Color.blue.opacity(0.15))
+        .frame(minWidth: 44, minHeight: 55)
+        .background(isSelected ? Color.blue.opacity(0.6) : Color.blue.opacity(0.15))
         .cornerRadius(8)
     }
 }
@@ -267,4 +275,30 @@ extension View {
 
 #Preview {
     HabitsView(habitViewModel: HabitViewModel(), weekdayPickerViewModel: WeekdayPickerViewModel())
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0) // Default color: Black
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
 }
