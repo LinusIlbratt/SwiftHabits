@@ -29,22 +29,22 @@ class HabitViewModel: ObservableObject {
     private var userId: String? {
         Auth.auth().currentUser?.uid
     }
-
+    
     init() {
-        loadHabits()     
+        loadHabits()
     }
     
     deinit {
         listener?.remove()
     }
-
+    
     
     func loadHabits() {
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: User is not logged in")
             return
         }
-
+        
         let userHabitsPath = db.collection("users").document(userId).collection("habits")
         
         userHabitsPath.getDocuments { snapshot, error in
@@ -59,13 +59,13 @@ class HabitViewModel: ObservableObject {
             self.habits = documents.compactMap { document -> Habit? in
                 try? document.data(as: Habit.self)
             }
-
+            
             self.checkForDayChange()
             self.updateFilteredHabits() // Ensure to filter the habits after loading
             self.calculateMissedDaysForAllHabits()
         }
     }
-
+    
     func calculateMissedDaysForAllHabits() {
         let currentDate = Date()
         for index in habits.indices {
@@ -73,26 +73,26 @@ class HabitViewModel: ObservableObject {
             
             let missedDays = calculateMissedActiveDays(for: habits[index], until: currentDate)
             print("Missed active days for habit \(habits[index].name): \(missedDays)")
-
+            
             if missedDays > 0 {
                 // Reset the streak count if there are missed days
                 habits[index].streakCount = 0
                 updateStreakCountInFirestore(habit: habits[index])
             }
-
+            
             // Update total attempts
             habits[index].totalAttempts += missedDays
-
+            
             // Update Firestore for total attempts
             updateTotalAttemptsForHabit(habit: habits[index])
         }
     }
     
     
-
+    
     func updateStreakCountInFirestore(habit: Habit) {
         guard let userId = Auth.auth().currentUser?.uid, let habitId = habit.id else { return }
-
+        
         let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
         habitRef.updateData([
             "streakCount": habit.streakCount
@@ -104,8 +104,8 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
-
-
+    
+    
     func updateTotalAttemptsForHabit(habit: Habit) {
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: User is not logged in")
@@ -126,28 +126,28 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
-
-
-
+    
+    
+    
     func updateFilteredHabits() {
-            let todayIndex = self.currentDayIndex()
-            self.filteredHabits = self.habits.filter { habit in
-                habit.daysActive[todayIndex]
-            }
+        let todayIndex = self.currentDayIndex()
+        self.filteredHabits = self.habits.filter { habit in
+            habit.daysActive[todayIndex]
         }
-
-        func currentDayIndex() -> Int {
-            let currentWeekday = Calendar.current.component(.weekday, from: Date()) // Sunday = 1, Monday = 2, etc.
-            return (currentWeekday + 5) % 7 // Adjusting index to match your array (Monday = 0)
-        }
-
+    }
+    
+    func currentDayIndex() -> Int {
+        let currentWeekday = Calendar.current.component(.weekday, from: Date()) // Sunday = 1, Monday = 2, etc.
+        return (currentWeekday + 5) % 7 // Adjusting index to match your array (Monday = 0)
+    }
+    
     
     func addHabit() {
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: User is not logged in")
             return
         }
-
+        
         let newId = UUID().uuidString  // Generate a unique ID
         let dateCreationString = dateManager.habitDayCreation()
         let newHabit = Habit(id: newId,
@@ -159,7 +159,7 @@ class HabitViewModel: ObservableObject {
                              streakCount: streakCount,
                              daysActive: daysSelected,
                              dayCreated: dateCreationString)
-
+        
         // Set the document in Firestore under the user's 'habits' sub-collection
         let userHabitPath = db.collection("users").document(userId).collection("habits").document(newId)
         do {
@@ -173,14 +173,17 @@ class HabitViewModel: ObservableObject {
                         self.updateFilteredHabits()
                         self.resetFields()
                     }
+                    
+                    // Schedule a notification for the new habit
+                    NotificationService.shared.scheduleHabitReminder(habitName: newHabit.name, clockReminder: newHabit.clockReminder, daysActive: newHabit.daysActive)
                 }
             }
         } catch let serializationError {
             print("Error serializing habit: \(serializationError)")
         }
     }
-
-
+    
+    
     
     func saveToFirestore(habit: Habit, completion: @escaping (Bool) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
@@ -188,7 +191,7 @@ class HabitViewModel: ObservableObject {
             completion(false)
             return
         }
-
+        
         let userHabitPath = Firestore.firestore().collection("users").document(userId).collection("habits")
         do {
             let _ = try userHabitPath.addDocument(from: habit) { error in
@@ -204,7 +207,7 @@ class HabitViewModel: ObservableObject {
             completion(false)
         }
     }
-
+    
     
     
     func completeHabit(to habitId: String) {
@@ -217,31 +220,31 @@ class HabitViewModel: ObservableObject {
             return
         }
         var habit = habits[index]
-
+        
         // Check if the habit was already marked as done today
         if habit.isDone {
             print("Habit already done today \(habitId)")
             return
         }
-
+        
         // Update habit
         habit.totalCompletions += 1
         habit.streakCount += 1
         habit.isDone = true
         habit.progress = 1
         habit.dayCompleted.append(Date())  // Append the new date
-
+        
         // Update the longest streak within the same habit modification
         if habit.streakCount > habit.longestStreak {
             habit.longestStreak = habit.streakCount
         }
-
+        
         habits[index] = habit  // Update the array to reflect the change
-
+        
         // Update Firestore
         updateCompletedHabitToFirestore(userId: userId, habitId: habitId, habit: habit)
     }
-
+    
     func updateCompletedHabitToFirestore(userId: String, habitId: String, habit: Habit) {
         let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
         habitRef.updateData([
@@ -259,27 +262,27 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     func storeLastKnownDay() {
         let today = Calendar.current.startOfDay(for: Date()) // Normalize to midnight
         UserDefaults.standard.set(today, forKey: "lastKnownDay")
     }
-
+    
     func getLastKnownDay() -> Date? {
         return UserDefaults.standard.object(forKey: "lastKnownDay") as? Date
-       // let calendar = Calendar.current
-       // return calendar.date(from: DateComponents(year: 2024, month: 4, day: 28))
+        // let calendar = Calendar.current
+        // return calendar.date(from: DateComponents(year: 2024, month: 4, day: 28))
     }
     
     func checkForDayChange() {
         let dateManager = DateManager() // Assuming DateManager is accessible here
         let currentDay = Calendar.current.startOfDay(for: Date())
         print("Current Day: \(dateManager.formattedDateTime(for: currentDay))")
-
+        
         if let lastKnownDay = getLastKnownDay() {
             print("Last Known Day: \(dateManager.formattedDateTime(for: lastKnownDay))")
-
+            
             if lastKnownDay != currentDay {
                 print("resetting")
                 resetIsDoneAndProgressForAllHabits()
@@ -291,8 +294,8 @@ class HabitViewModel: ObservableObject {
             storeLastKnownDay()
         }
     }
-
-
+    
+    
     
     func resetIsDoneAndProgressForAllHabits() {
         print("this is running")
@@ -306,8 +309,8 @@ class HabitViewModel: ObservableObject {
             updateHabitResetToFirestore(habit)
         }
     }
-
-
+    
+    
     
     func updateHabitResetToFirestore(_ habit: Habit) {
         guard let userId = Auth.auth().currentUser?.uid else {
@@ -330,14 +333,14 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     func updateTotalAttempts() {
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: User is not logged in")
             return
         }
-
+        
         let currentWeekday = Calendar.current.component(.weekday, from: Date())
         let todayIndex = (currentWeekday + 5) % 7
         
@@ -366,46 +369,44 @@ class HabitViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     func calculateMissedActiveDays(for habit: Habit, until currentDate: Date) -> Int {
         guard let lastCompletionDate = habit.dayCompleted.last else {
             print("No completion date available for habit \(habit.name)")
             return 0
         }
-
+        
         let calendar = Calendar.current
         let daysPassed = calendar.dateComponents([.day], from: lastCompletionDate, to: currentDate).day ?? 0
-
+        
         // Check if daysPassed is positive before creating a range
         guard daysPassed > 0 else {
             return 0
         }
-
+        
         var missedDaysCount = 0
-
+        
         // Iterate over the days between the last completion date and the current date
         for dayOffset in 1...daysPassed {
             // Calculate the date for each day
             guard let missedDate = calendar.date(byAdding: .day, value: -dayOffset, to: currentDate) else {
                 continue
             }
-
+            
             let weekdayIndex = calendar.component(.weekday, from: missedDate) - 1 // Adjusted to match your weekday indexing
-
+            
             // Check if the habit is active on the missed day
             if habit.daysActive.indices.contains(weekdayIndex) && habit.daysActive[weekdayIndex] {
                 missedDaysCount += 1
             }
         }
-
+        
         return missedDaysCount
     }
-
-
-
     
-
+    
+    
     func resetFields() {
         habitName = ""
         selectedIcon = ""
@@ -415,53 +416,4 @@ class HabitViewModel: ObservableObject {
         daysSelected = [false, false, false, false, false, false, false]
     }
     
-    
-    func scheduleNotification(for habit: Habit) {
-        let content = UNMutableNotificationContent()
-        content.title = "Reminder: \(habit.name)"
-        content.body = "Time to engage in your habit!"
-        content.sound = UNNotificationSound.default
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-
-        // fetch current day
-        let today = Date()
-
-        // fetch time from habit.clockReminder
-        guard let time = dateFormatter.date(from: habit.clockReminder) else {
-            print("Error: Invalid time format for reminder: \(habit.clockReminder)")
-            return
-        }
-
-        // create a new date with current day and time from habit.clockReminder
-        var components = Calendar.current.dateComponents([.year, .month, .day], from: today)
-        components.hour = Calendar.current.component(.hour, from: time)
-        components.minute = Calendar.current.component(.minute, from: time)
-
-        guard let date = Calendar.current.date(from: components) else {
-            print("Error: Unable to create date for reminder: \(habit.clockReminder)")
-            return
-        }
-
-        let timeInterval = date.timeIntervalSinceNow
-        if timeInterval <= 0 {
-            print("Error: Reminder time has already passed for \(habit.name) at \(habit.clockReminder)")
-            return
-        }
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        // Using the Firestore ID directly if available, otherwise a random UUID
-        let requestID = habit.id ?? UUID().uuidString
-        let request = UNNotificationRequest(identifier: requestID, content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
-            } else {
-                print("Notification scheduled successfully for habit: \(habit.name) at \(habit.clockReminder)")
-            }
-        }
-    }
-
 }

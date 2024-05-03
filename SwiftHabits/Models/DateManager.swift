@@ -84,6 +84,20 @@ class DateManager {
     func formattedDateTime(for date: Date) -> String {
         return dateTimeFormatter.string(from: date)
     }
+    
+    func getDateComponents(from timeString: String) -> DateComponents? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "sv_SE")  // Swedish Locale
+        formatter.timeZone = TimeZone(identifier: "Europe/Stockholm")  // Swedish Time Zone
+        formatter.dateFormat = "HH:mm"
+
+        if let date = formatter.date(from: timeString) {
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.hour, .minute], from: date)
+            return components
+        }
+        return nil
+    }
 }
 
 

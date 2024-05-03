@@ -31,6 +31,7 @@
 		1BE408B92BD7AA1100AA212B /* HabitViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */; };
 		1BF65ADA2BE358F600869BBC /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF65AD92BE358F600869BBC /* CalendarViewModel.swift */; };
 		1BF65ADC2BE3AF2000869BBC /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF65ADB2BE3AF2000869BBC /* UserViewModel.swift */; };
+		1BFDA1CF2BE4ADCD00D6EB5F /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */; };
 		1BFE5A252BD9139A0046B116 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BFE5A242BD9139A0046B116 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,7 @@
 		1BE408B82BD7AA1100AA212B /* HabitViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewModel.swift; sourceTree = "<group>"; };
 		1BF65AD92BE358F600869BBC /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		1BF65ADB2BE3AF2000869BBC /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
+		1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationService.swift; path = SwiftHabits/Views/NotificationService.swift; sourceTree = SOURCE_ROOT; };
 		1BFE5A242BD9139A0046B116 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -212,6 +214,7 @@
 		1B1EA0542BD6460100D202CE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				1BFDA1CE2BE4ADCD00D6EB5F /* NotificationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -369,6 +372,7 @@
 			files = (
 				1BF65ADA2BE358F600869BBC /* CalendarViewModel.swift in Sources */,
 				1BE408B32BD774CF00AA212B /* NewHabitView.swift in Sources */,
+				1BFDA1CF2BE4ADCD00D6EB5F /* NotificationService.swift in Sources */,
 				1B1EA0292BD645BA00D202CE /* RootView.swift in Sources */,
 				1B1EA0662BD6796700D202CE /* DateManager.swift in Sources */,
 				1B1EA0622BD6697700D202CE /* HabitsView.swift in Sources */,
