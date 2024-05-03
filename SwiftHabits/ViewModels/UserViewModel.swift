@@ -7,30 +7,34 @@
 
 import Foundation
 import FirebaseAuth
+import Combine
 
 class UserViewModel: ObservableObject {
     @Published var isLoggedIn = false
+    @Published var errorMessage: String?
 
     func signIn(email: String, password: String) {
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
-            guard result != nil, error == nil else {
-                print("Error signing in: \(error!.localizedDescription)")
-                return
-            }
             DispatchQueue.main.async {
-                self?.isLoggedIn = true
+                if let error = error {
+                    self?.errorMessage = "Login failed: \(error.localizedDescription)"
+                } else {
+                    self?.isLoggedIn = true
+                    self?.errorMessage = nil // Clear previous errors
+                }
             }
         }
     }
 
     func signUp(email: String, password: String) {
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
-            guard result != nil, error == nil else {
-                print("Error creating user: \(error!.localizedDescription)")
-                return
-            }
             DispatchQueue.main.async {
-                self?.isLoggedIn = true
+                if let error = error {
+                    self?.errorMessage = "Registration failed: \(error.localizedDescription)"
+                } else {
+                    self?.isLoggedIn = true
+                    self?.errorMessage = nil // Clear previous errors
+                }
             }
         }
     }

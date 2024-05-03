@@ -124,6 +124,9 @@
         }
       }
     },
+    "Error" : {
+
+    },
     "Every day" : {
       "localizations" : {
         "sv" : {
@@ -198,6 +201,9 @@
           }
         }
       }
+    },
+    "OK" : {
+
     },
     "Password" : {
 
@@ -286,7 +292,7 @@
         }
       }
     },
-    "SwiftHabits" : {
+    "Swift" : {
 
     },
     "Thur" : {

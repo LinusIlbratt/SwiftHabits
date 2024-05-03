@@ -42,6 +42,7 @@ struct ContentView: View {
             }
         }
     }
+    
 }
 
 struct UserView: View {
@@ -52,9 +53,21 @@ struct UserView: View {
     var body: some View {
         VStack {
             Spacer()
-            Text("SwiftHabits")
-                .font(.largeTitle)
-                .bold()
+            ZStack {
+                Text("Swift")
+                    .font(.system(size: 122, weight: .black))
+                    .bold()
+                    .foregroundColor(.white)
+                    .shadow(color: Color.black.opacity(0.3), radius: 4)
+                    
+                Text("Habits")
+                    .font(.system(size: 68, weight: .black))
+                    .bold()
+                    .foregroundColor(.blue.opacity(0.5))
+                    .rotationEffect(.degrees(-10))
+                    .offset(x: 70, y: 50)
+            }
+            
 
             TextField("Email", text: $email)
                 .padding()
@@ -78,7 +91,7 @@ struct UserView: View {
                     .foregroundColor(.white)
                     .frame(minWidth: 0, maxWidth: .infinity)
                     .padding()
-                    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.7)]), startPoint: .leading, endPoint: .trailing))
+                    .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing))
                     .cornerRadius(5)
                     .padding(.horizontal, 24)
                     .padding(.top, 20)
@@ -100,6 +113,12 @@ struct UserView: View {
             }
             Spacer()
         }
+        .alert(isPresented: Binding<Bool>(
+            get: { self.userViewModel.errorMessage != nil },
+            set: { _ in self.userViewModel.errorMessage = nil }
+        ), content: {
+            Alert(title: Text("Error"), message: Text(userViewModel.errorMessage ?? "Unknown error"), dismissButton: .default(Text("OK")))
+        })
         .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
         .edgesIgnoringSafeArea(.all)
     }
