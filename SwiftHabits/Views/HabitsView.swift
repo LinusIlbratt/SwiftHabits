@@ -166,7 +166,7 @@ struct HabitCardView: View {
         .frame(height: 100)
         .background(Color.white)
         .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.1), radius: 12)
+        .shadow(color: Color.blue.opacity(0.2), radius: 12)
        // .shadow(color: Color.blue.opacity(0.2), radius: 20, x: 10, y: 10)
         .onTapGesture {
             withAnimation {
