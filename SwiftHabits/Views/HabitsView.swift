@@ -136,6 +136,7 @@ struct HabitCardView: View {
             Image(systemName: habit.iconName)
                 .font(.title)
                 .foregroundColor(.blue)
+                .padding(.leading, 20)
                 .padding(.trailing, 10)
             VStack(alignment: .leading, spacing: 5) {
                 Text(habit.name)
@@ -163,7 +164,7 @@ struct HabitCardView: View {
             ProgressView(value: habit.progress, total: habit.progress)
                 .progressViewStyle(CircularProgressBarStyle(trackColor: .gray, progressColor: .blue, textColor: .black))
                 .frame(width: 50, height: 50)
-                .padding(.trailing, 10)
+                .padding(.trailing, 20)
         }
         .frame(height: 100)
         .background(Color.white)

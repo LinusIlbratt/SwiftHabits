@@ -35,35 +35,7 @@ struct DayButton: View {
     }
 }
 
-struct IconPicker: View {
-    let icons: [String]
-    @Binding var selectedIcon: String
-    
-    var body: some View {        
-        Text("Choose Image")
-            .font(.headline)
-            .padding()
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white)
-                .shadow(radius: 5)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 20) {
-                ForEach(icons, id: \.self) { icon in
-                    Image(systemName: icon)
-                        .font(.largeTitle)
-                        .padding()
-                        .background(selectedIcon == icon ? Color.blue : Color.clear)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .onTapGesture {
-                            selectedIcon = icon
-                        }
-                }
-            }
-            .padding(.top, 5)
-        }
-        .padding(.horizontal, 20)
-    }
-}
+
 
 struct CustomPickerStyle: ViewModifier {
     func body(content: Content) -> some View {

@@ -12,8 +12,8 @@ struct NewHabitView: View {
     @Binding var isPresented: Bool
 
     var icons = [
-        "flame.fill", "bolt.fill", "moon.fill", "sun.max.fill",
-        "cloud.fill", "snow", "wind", "tornado"
+        "figure.walk", "bolt.fill", "moon.fill", "sun.max.fill",
+        "cloud.fill", "figure.run", "dumbbell.fill", "figure.open.water.swim"
     ]
     
     let frequencyOptions = ["Daily", "Weekly", "Monthly"]
@@ -82,6 +82,36 @@ struct HabitNameInputView: View {
     }
 }
 
+struct IconPicker: View {
+    let icons: [String]
+    @Binding var selectedIcon: String
+    
+    var body: some View {
+        Text("Choose Image")
+            .font(.headline)
+            .padding()
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white)
+                .shadow(radius: 5)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 20) {
+                ForEach(icons, id: \.self) { icon in
+                    Image(systemName: icon)
+                        .font(.largeTitle)
+                        .padding()
+                        .background(selectedIcon == icon ? Color.blue : Color.clear)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .onTapGesture {
+                            selectedIcon = icon
+                        }
+                }
+            }
+            .padding(.top, 5)
+        }
+        .padding(.horizontal, 20)
+    }
+}
+
 struct FrequencyPickerView: View {
     @Binding var frequency: String
     var frequencyOptions: [String]
@@ -141,25 +171,76 @@ struct EveryDayToggleView: View {
 
 struct TimeReminderInputView: View {
     @Binding var clockReminder: String
+    @State private var showingPicker = false
+    @State private var selectedHour: Int = 0
+    @State private var selectedMinute: Int = 0
 
     var body: some View {
-        HStack {
-            Text("Remind at specific time")
-                .font(.headline)
-                .padding(.leading, 20)
-            Spacer()
-            TextField("8:00", text: $clockReminder)
-                .padding(.vertical, 8)
-                .padding(.horizontal, 16)
-                .font(.subheadline)
-                .frame(width: 100)
+        VStack {
+            HStack {
+                Text("Remind at specific time")
+                    .font(.headline)
+                    .padding(.leading, 20)
+
+                Spacer()  // Pushes the following content to the right
+
+                Button(action: {
+                    self.showingPicker.toggle()
+                }) {
+                    Text(clockReminder.isEmpty ? "8:00" : clockReminder)
+                        .foregroundColor(.black)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 16)
+                }
+                .frame(height: 44)
                 .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.2)))
                 .padding(.trailing, 20)
+            }
+            .padding(.vertical)
+
+            .popover(isPresented: $showingPicker) {
+                timePickerView()
+                    .frame(width: 220, height: 260)
+                    .padding()
+            }
         }
-        .padding(.vertical)
+    }
+    
+    @ViewBuilder
+    private func timePickerView() -> some View {
+        VStack {
+            Text("Choose Time")
+                .font(.headline)
+                .padding(.bottom, 10)
+            
+            HStack {
+                Picker("Hour", selection: $selectedHour) {
+                    ForEach(0...23, id: \.self) { hour in
+                        Text(String(format: "%02d", hour)).tag(hour)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle())
+                .frame(width: 100, height: 150)
+                .clipped()
+
+                Picker("Minute", selection: $selectedMinute) {
+                    ForEach(0...59, id: \.self) { minute in
+                        Text(String(format: "%02d", minute)).tag(minute)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle())
+                .frame(width: 100, height: 150)
+                .clipped()
+            }
+
+            Button("Set reminder") {
+                clockReminder = String(format: "%02d:%02d", selectedHour, selectedMinute)
+                showingPicker = false
+            }
+            .padding(.top, 10)
+        }
     }
 }
-
 
 struct NewHabitView_Previews: PreviewProvider {
     static var previews: some View {
