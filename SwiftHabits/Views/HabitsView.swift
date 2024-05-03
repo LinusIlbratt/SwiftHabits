@@ -111,6 +111,7 @@ struct HabitListView: View {
                 ForEach($viewModel.filteredHabits, id: \.id) { $habit in
                     HabitCardView(habit: $habit)
                         .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                 }
             }
             .listStyle(PlainListStyle())
@@ -189,8 +190,8 @@ struct NewHabitButton: View {
             Text("+ New habit")
                 .padding()
         })
-        .background(Color.blue)
-        .cornerRadius(15)
+        .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing))
+        .cornerRadius(10)
         .foregroundColor(.white)
         .fullScreenCover(isPresented: $showingNewHabit) {
             NewHabitView(viewModel: viewModel, isPresented: $showingNewHabit)

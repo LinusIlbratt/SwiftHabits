@@ -58,6 +58,7 @@ struct NewHabitView: View {
                     Spacer()
                 }
             }
+            .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
             .navigationBarTitle("Add New Habit", displayMode: .inline)
             .navigationBarItems(leading: Button(action: {
                 isPresented = false
