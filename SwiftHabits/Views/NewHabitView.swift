@@ -171,9 +171,10 @@ struct EveryDayToggleView: View {
 
 struct TimeReminderInputView: View {
     @Binding var clockReminder: String
-    @State private var showingPicker = false
     @State private var selectedHour: Int = 0
     @State private var selectedMinute: Int = 0
+    @State private var isPopoverPresented = false
+    @State private var popoverSize: CGSize = .zero
 
     var body: some View {
         VStack {
@@ -182,10 +183,10 @@ struct TimeReminderInputView: View {
                     .font(.headline)
                     .padding(.leading, 20)
 
-                Spacer()  // Pushes the following content to the right
+                Spacer()
 
                 Button(action: {
-                    self.showingPicker.toggle()
+                    self.isPopoverPresented.toggle()
                 }) {
                     Text(clockReminder.isEmpty ? "8:00" : clockReminder)
                         .foregroundColor(.black)
@@ -198,14 +199,42 @@ struct TimeReminderInputView: View {
             }
             .padding(.vertical)
 
-            .popover(isPresented: $showingPicker) {
-                timePickerView()
-                    .frame(width: 220, height: 260)
-                    .padding()
+            ZStack {
+                if isPopoverPresented {
+                    Color.clear
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.clear)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            isPopoverPresented.toggle()
+                        }
+
+                    VStack {
+                        timePickerView()
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+
+                            .background(
+                                GeometryReader { geometry in
+                                    Color.clear
+                                        .onAppear {
+                                            self.popoverSize = geometry.size
+                                        }
+                                }
+                            )
+                            .offset(y: -popoverSize.height / 2)
+                            .animation(.default)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: popoverSize.height)
+                    .padding(.horizontal, 20)
+                }
             }
         }
     }
-    
+
     @ViewBuilder
     private func timePickerView() -> some View {
         VStack {
@@ -235,12 +264,14 @@ struct TimeReminderInputView: View {
 
             Button("Set reminder") {
                 clockReminder = String(format: "%02d:%02d", selectedHour, selectedMinute)
-                showingPicker = false
+                isPopoverPresented = false
             }
             .padding(.top, 10)
         }
     }
 }
+
+
 
 struct NewHabitView_Previews: PreviewProvider {
     static var previews: some View {
