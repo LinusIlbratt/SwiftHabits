@@ -25,7 +25,6 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            
             NavigationStack {
                 HabitsView(habitViewModel: habitViewModel, weekdayPickerViewModel: weekdayPickerViewModel)
             }
@@ -33,16 +32,14 @@ struct ContentView: View {
                 Label(LocalizedStringKey("Habits"), systemImage: "arrow.3.trianglepath")
             }
 
-            
             NavigationStack {
-                SummaryView()
+                SummaryView(habitViewModel: habitViewModel)  // Pass the same habitViewModel instance here
             }
             .tabItem {
                 Label("Progress", systemImage: "chart.bar.xaxis")
             }
         }
     }
-    
 }
 
 struct UserView: View {

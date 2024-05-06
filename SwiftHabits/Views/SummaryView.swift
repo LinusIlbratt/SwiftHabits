@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SummaryView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
-    @StateObject private var habitViewModel = HabitViewModel()
+    @ObservedObject var habitViewModel: HabitViewModel
     @State private var selectedSegment = 0
 
     var body: some View {
@@ -24,8 +24,10 @@ struct SummaryView: View {
                 
                 HabitSummaryView(viewModelHabit: habitViewModel, viewModelCalendar: calendarViewModel, selectedSegment: $selectedSegment)
             }
+            .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
         }
     }
+
 struct CalendarView: View {
     @ObservedObject var viewModel: CalendarViewModel
     var dayCompleted: [Date]  // Now properly passed from SummaryView
@@ -95,7 +97,7 @@ struct DayCell: View {
     var body: some View {
             Text("\(Calendar.current.component(.day, from: date))")
                 .frame(width: 40, height: 40)
-                .background(isActive ? Color.green : Color.clear)
+                .background(isActive ? Color.blue.opacity(0.3) : Color.clear)
                 .cornerRadius(10) // Apply rounded corners directly to the background
                 .overlay(
                     RoundedRectangle(cornerRadius: 10) // Apply rounded rectangle overlay
@@ -150,7 +152,7 @@ struct StreakCountView: View {
                 .foregroundColor(.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(Color.blue) // Background color for the entire card
+        .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .cornerRadius(10) // Rounded corners for the card
         .padding() // Padding around the card
     }
@@ -170,7 +172,7 @@ struct LongestStreakView: View {
             .foregroundColor(.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(Color.blue) // Background color for the entire card
+        .background(LinearGradient(gradient: Gradient(colors: [Color.yellow.opacity(0.5), Color.yellow]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .cornerRadius(10) // Rounded corners for the card
         .padding() // Padding around the card
     }
@@ -191,7 +193,7 @@ struct TotalCompletionsView: View {
             .foregroundColor(.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(Color.blue) // Background color for the entire card
+        .background(LinearGradient(gradient: Gradient(colors: [Color.red.opacity(0.4), Color.red]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .cornerRadius(10) // Rounded corners for the card
         .padding() // Padding around the card
     }
@@ -217,7 +219,7 @@ struct DaysDoneInMonthView: View {
             Text("days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
         }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.blue)
+            .background(LinearGradient(gradient: Gradient(colors: [Color.green.opacity(0.4), Color.green]), startPoint: .topLeading, endPoint: .bottomTrailing))
             .cornerRadius(10)
             .padding()
     }
@@ -226,7 +228,7 @@ struct DaysDoneInMonthView: View {
 struct SummaryView_Previews: PreviewProvider {
     static var previews: some View {
         // Create an instance of CalendarViewModel for the preview
-        SummaryView()
+        SummaryView(habitViewModel: HabitViewModel())
     }
 }
 
