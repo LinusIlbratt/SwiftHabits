@@ -86,7 +86,7 @@
         }
       }
     },
-    "Best streak:" : {
+    "Best streak" : {
 
     },
     "Choose Image" : {
@@ -102,13 +102,13 @@
     "Choose Time" : {
 
     },
-    "Current streak:" : {
+    "Current streak" : {
 
     },
     "Daily Goals" : {
 
     },
-    "Days done in %@:" : {
+    "Days done in %@" : {
 
     },
     "Email" : {
@@ -338,7 +338,7 @@
         }
       }
     },
-    "Total days done:" : {
+    "Total days done" : {
 
     },
     "Tues" : {

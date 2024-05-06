@@ -141,23 +141,38 @@ struct DaysDoneInMonthView: View {
     var dayCompleted: [Date]
     
     var body: some View {
-        // Compute the count of dates in the current month
-        let daysCompletedInMonth = dayCompleted.filter { date in
-            let monthYearFormatter = DateFormatter()
-            monthYearFormatter.dateFormat = "yyyy MM"
-            return monthYearFormatter.string(from: date) == monthYearFormatter.string(from: viewModel.currentMonth)
-        }.count
-
-        // Display the count and the month name
-        VStack {
-            Text("Days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter):")
-            Text("\(daysCompletedInMonth)")
-                .font(.largeTitle)
-        }
+        ZStack(alignment: .top) {
+            // Compute the count of dates in the current month
+            let daysCompletedInMonth = dayCompleted.filter { date in
+                let monthYearFormatter = DateFormatter()
+                monthYearFormatter.dateFormat = "yyyy MM"
+                return monthYearFormatter.string(from: date) == monthYearFormatter.string(from: viewModel.currentMonth)
+            }.count
+            
+            // Display the count and the month name
+            VStack {
+                Text("Days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.4))
+                Text("\(daysCompletedInMonth)")
+                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.8))
+            }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+            )
             .cornerRadius(10)
             .padding()
+            .shadow(radius: 3)
+            
+            Image(systemName: "calendar")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+                .foregroundColor(.blue)
+                .offset(y: 5)
+        }
     }
 }
 
@@ -165,19 +180,30 @@ struct TotalCompletionsView: View {
     var totalCompletions: Int
     
     var body: some View {
-        VStack(spacing: 4) {
-        Text("Total days done:")
-            .font(.subheadline)
-            .foregroundColor(.black)
+        ZStack(alignment: .top) {
+            VStack(spacing: 4) {
+                Text("Total days done")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.4))
+                
+                Text("\(totalCompletions)")
+                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.8))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+            )
+            .cornerRadius(10)
+            .padding()
+            .shadow(radius: 3)
             
-        Text("\(totalCompletions)")
-            .font(.largeTitle)
-            .foregroundColor(.black)
+            Image(systemName: "star.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+                .foregroundColor(.gold)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(10) // Rounded corners for the card
-        .padding() // Padding around the card
     }
     
 }
@@ -187,19 +213,31 @@ struct StreakCountView: View {
     var streakCount: Int
 
     var body: some View {
-        VStack(spacing: 4) { // Reduced spacing between the texts
-            Text("Current streak:")
-                .foregroundColor(.black)
-                .font(.subheadline) // Optional styling for the label
+        ZStack(alignment: .top) {
+            VStack(spacing: 4) { // Reduced spacing between the texts
+                Text("Current streak")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.4))
+                
+                Text("\(streakCount)")
+                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.8))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+            )
+            .cornerRadius(10)
+            .padding()
+            .shadow(radius: 3)
             
-            Text("\(streakCount)")
-                .font(.largeTitle)
-                .foregroundColor(.black)
+            Image(systemName: "flame.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+                .foregroundColor(.red)
+               // .offset(y:)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(10) // Rounded corners for the card
-        .padding() // Padding around the card
     }
 }
 
@@ -207,21 +245,37 @@ struct LongestStreakView: View {
     var longestStreak: Int
     
     var body: some View {
-        VStack(spacing: 4) {
-        Text("Best streak:")
-            .font(.subheadline)
-            .foregroundColor(.black)
-            
-        Text("\(longestStreak)")
-            .font(.largeTitle)
-            .foregroundColor(.black)
+        ZStack(alignment: .top) {
+            VStack(spacing: 4) {
+                Text("Best streak")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.4))
+                
+                Text("\(longestStreak)")
+                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .foregroundColor(.blue.opacity(0.8))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+            )
+            .cornerRadius(10)
+            .padding()
+            .shadow(radius: 3)
+
+            // Place the crown icon
+            Image(systemName: "crown.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 50, height: 50)
+                .foregroundColor(.yellow)
+                .offset(y: -5)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(10) // Rounded corners for the card
-        .padding() // Padding around the card
     }
-        
+}
+
+extension Color {
+    static let gold = Color(red: 0.83, green: 0.69, blue: 0.22)
 }
 
 
