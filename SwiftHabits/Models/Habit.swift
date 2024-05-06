@@ -18,7 +18,7 @@ struct Habit: Identifiable, Codable {
     var streakCount: Int = 0 // done
     var longestStreak: Int = 0 // done
     var totalCompletions: Int = 0 // done
-    var totalAttempts: Int = 0 // not done, increase everytime an active day is passed/new day
+    var totalAttempts: Int = 0 // done
     var daysActive: [Bool]
     var badges: [String] = []
     var dayCompleted: [Date] = []

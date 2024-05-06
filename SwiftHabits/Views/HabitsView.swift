@@ -14,6 +14,8 @@ struct HabitsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
+            Text(Date(), style: .date)
+                .font(.title3.bold())
             WeekdayPickerView(weekdayPickerViewModel: weekdayPickerViewModel)
             Spacer()
             GoalCardView(viewModel: habitViewModel)

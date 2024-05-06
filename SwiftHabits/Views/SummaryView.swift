@@ -136,70 +136,6 @@ struct HabitSummaryView: View {
     }
 }
 
-
-
-struct StreakCountView: View {
-    var streakCount: Int
-
-    var body: some View {
-        VStack(spacing: 4) { // Reduced spacing between the texts
-            Text("Current streak:")
-                .foregroundColor(.white)
-                .font(.subheadline) // Optional styling for the label
-            
-            Text("\(streakCount)")
-                .font(.headline)
-                .foregroundColor(.white)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(10) // Rounded corners for the card
-        .padding() // Padding around the card
-    }
-}
-
-struct LongestStreakView: View {
-    var longestStreak: Int
-    
-    var body: some View {
-        VStack(spacing: 4) {
-        Text("Best streak:")
-            .font(.subheadline)
-            .foregroundColor(.white)
-            
-        Text("\(longestStreak)")
-            .font(.headline)
-            .foregroundColor(.white)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(LinearGradient(gradient: Gradient(colors: [Color.yellow.opacity(0.5), Color.yellow]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(10) // Rounded corners for the card
-        .padding() // Padding around the card
-    }
-        
-}
-
-struct TotalCompletionsView: View {
-    var totalCompletions: Int
-    
-    var body: some View {
-        VStack(spacing: 4) {
-        Text("Total days done:")
-            .font(.subheadline)
-            .foregroundColor(.white)
-            
-        Text("\(totalCompletions)")
-            .font(.headline)
-            .foregroundColor(.white)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
-        .background(LinearGradient(gradient: Gradient(colors: [Color.red.opacity(0.4), Color.red]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        .cornerRadius(10) // Rounded corners for the card
-        .padding() // Padding around the card
-    }
-    
-}
-
 struct DaysDoneInMonthView: View {
     @ObservedObject var viewModel: CalendarViewModel
     var dayCompleted: [Date]
@@ -214,16 +150,81 @@ struct DaysDoneInMonthView: View {
 
         // Display the count and the month name
         VStack {
+            Text("Days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter):")
             Text("\(daysCompletedInMonth)")
                 .font(.largeTitle)
-            Text("days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
         }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(LinearGradient(gradient: Gradient(colors: [Color.green.opacity(0.4), Color.green]), startPoint: .topLeading, endPoint: .bottomTrailing))
+            .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
             .cornerRadius(10)
             .padding()
     }
 }
+
+struct TotalCompletionsView: View {
+    var totalCompletions: Int
+    
+    var body: some View {
+        VStack(spacing: 4) {
+        Text("Total days done:")
+            .font(.subheadline)
+            .foregroundColor(.black)
+            
+        Text("\(totalCompletions)")
+            .font(.largeTitle)
+            .foregroundColor(.black)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+        .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+        .cornerRadius(10) // Rounded corners for the card
+        .padding() // Padding around the card
+    }
+    
+}
+
+
+struct StreakCountView: View {
+    var streakCount: Int
+
+    var body: some View {
+        VStack(spacing: 4) { // Reduced spacing between the texts
+            Text("Current streak:")
+                .foregroundColor(.black)
+                .font(.subheadline) // Optional styling for the label
+            
+            Text("\(streakCount)")
+                .font(.largeTitle)
+                .foregroundColor(.black)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+        .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+        .cornerRadius(10) // Rounded corners for the card
+        .padding() // Padding around the card
+    }
+}
+
+struct LongestStreakView: View {
+    var longestStreak: Int
+    
+    var body: some View {
+        VStack(spacing: 4) {
+        Text("Best streak:")
+            .font(.subheadline)
+            .foregroundColor(.black)
+            
+        Text("\(longestStreak)")
+            .font(.largeTitle)
+            .foregroundColor(.black)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+        .background(LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.2), Color.white.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+        .cornerRadius(10) // Rounded corners for the card
+        .padding() // Padding around the card
+    }
+        
+}
+
+
 
 struct SummaryView_Previews: PreviewProvider {
     static var previews: some View {
@@ -231,4 +232,3 @@ struct SummaryView_Previews: PreviewProvider {
         SummaryView(habitViewModel: HabitViewModel())
     }
 }
-
