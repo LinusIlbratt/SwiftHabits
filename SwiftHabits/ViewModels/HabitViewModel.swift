@@ -64,6 +64,7 @@ class HabitViewModel: ObservableObject {
             self.checkForDayChange()
             self.updateFilteredHabits() // Ensure to filter the habits after loading
             self.calculateMissedDaysForAllHabits()
+            NotificationService.shared.printActiveReminders()
         }
     }
     

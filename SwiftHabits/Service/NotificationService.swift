@@ -43,4 +43,28 @@ class NotificationService {
             }
         }
     }
+    
+    func printActiveReminders() {
+            UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+                if requests.isEmpty {
+                    print("No active reminders.")
+                } else {
+                    print("Active reminders:")
+                    for request in requests {
+                        let content = request.content
+                        let trigger = request.trigger as? UNCalendarNotificationTrigger
+                        let habitName = content.title
+                        let triggerDate = trigger?.nextTriggerDate()
+
+                        if let triggerDate = triggerDate {
+                            print("Habit: \(habitName), Next Trigger Date: \(triggerDate)")
+                        }
+                    }
+                }
+            }
+        }
+    
+    func removeAllNotifications() {
+            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        }
 }

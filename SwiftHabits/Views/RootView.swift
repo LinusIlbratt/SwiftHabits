@@ -119,6 +119,7 @@ struct UserView: View {
         .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
         .edgesIgnoringSafeArea(.all)
     }
+    
 }
 
 //#Preview {
