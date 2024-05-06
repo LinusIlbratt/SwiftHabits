@@ -37,15 +37,21 @@ struct CalendarView: View {
             HStack {
                 Button(action: viewModel.moveToPreviousMonth) {
                     Image(systemName: "arrow.left")
+                        .foregroundColor(.black)
+                        .font(.system(size: 18, weight: .bold, design: .rounded))
                 }
 
                 Text("\(viewModel.currentMonth, formatter: viewModel.monthYearFormatter)")
-                    .font(.headline)
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
 
                 Button(action: viewModel.moveToNextMonth) {
                     Image(systemName: "arrow.right")
+                        .foregroundColor(.black)
+                        .font(.system(size: 18, weight: .bold, design: .rounded))
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: 50)
+            .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
             
             MonthView(viewModel: viewModel, dayCompleted: dayCompleted)
         }
@@ -160,11 +166,15 @@ struct DaysDoneInMonthView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
-                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white.opacity(0.7), Color.white]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
             )
             .cornerRadius(10)
             .padding()
-            .shadow(radius: 3)
+            .shadow(color: Color.blue.opacity(0.2), radius: 3, x: 0, y: 2)
             
             Image(systemName: "calendar")
                 .resizable()
@@ -192,11 +202,15 @@ struct TotalCompletionsView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
-                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white.opacity(0.7), Color.white]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
             )
             .cornerRadius(10)
             .padding()
-            .shadow(radius: 3)
+            .shadow(color: Color.blue.opacity(0.2), radius: 3, x: 0, y: 2)
             
             Image(systemName: "star.fill")
                 .resizable()
@@ -225,11 +239,15 @@ struct StreakCountView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
             .background(
-                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white.opacity(0.7), Color.white]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
             )
             .cornerRadius(10)
             .padding()
-            .shadow(radius: 3)
+            .shadow(color: Color.blue.opacity(0.2), radius: 3, x: 0, y: 2)
             
             Image(systemName: "flame.fill")
                 .resizable()
@@ -257,13 +275,16 @@ struct LongestStreakView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
-                LinearGradient(gradient: Gradient(colors: [Color.white.opacity(0.8), Color.white.opacity(1)]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white.opacity(0.7), Color.white]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
             )
             .cornerRadius(10)
             .padding()
-            .shadow(radius: 3)
+            .shadow(color: Color.blue.opacity(0.2), radius: 3, x: 0, y: 2)
 
-            // Place the crown icon
             Image(systemName: "crown.fill")
                 .resizable()
                 .scaledToFit()
@@ -273,6 +294,7 @@ struct LongestStreakView: View {
         }
     }
 }
+
 
 extension Color {
     static let gold = Color(red: 0.83, green: 0.69, blue: 0.22)

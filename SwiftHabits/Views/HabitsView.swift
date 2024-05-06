@@ -86,7 +86,7 @@ struct GoalCardView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
-            .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing))
+            .background(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.blue.opacity(0.6)]), startPoint: .topLeading, endPoint: .bottomTrailing))
             .cornerRadius(20)
             .frame(width: 350, height: 80)
 

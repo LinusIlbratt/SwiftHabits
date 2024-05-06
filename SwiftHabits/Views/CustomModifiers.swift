@@ -16,26 +16,6 @@ struct PaddedTextFieldStyle: ViewModifier {
     }
 }
 
-struct DayButton: View {
-    @Binding var isSelected: Bool
-    let label: String
-
-    var body: some View {
-        Button(action: {
-            isSelected.toggle()
-        }) {
-            Text(label)
-                .fontWeight(.medium)
-                .foregroundColor(isSelected ? .white : .black)
-                .padding(.vertical, 10)
-                .padding(.horizontal)
-                .background(isSelected ? Color.blue : Color.gray.opacity(0.2))
-                .cornerRadius(15)
-        }
-    }
-}
-
-
 
 struct CustomPickerStyle: ViewModifier {
     func body(content: Content) -> some View {

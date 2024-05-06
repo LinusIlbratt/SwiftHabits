@@ -12,9 +12,11 @@ struct NewHabitView: View {
     @Binding var isPresented: Bool
 
     var icons = [
-        "figure.walk", "bolt.fill", "moon.fill", "sun.max.fill",
-        "cloud.fill", "figure.run", "dumbbell.fill", "figure.open.water.swim"
+        "figure.walk", "figure.run", "dumbbell.fill", "figure.open.water.swim",
+        "cloud.fill", "snowflake", "moon.fill", "sun.max.fill",
+        "leaf.fill", "pawprint.fill", "heart.fill", "car.fill"
     ]
+
     
     let frequencyOptions = ["Daily", "Weekly", "Monthly"]
     let days = ["M", "T", "W", "T", "F", "S", "S"]
@@ -48,9 +50,11 @@ struct NewHabitView: View {
                         viewModel.addHabit()  // Uses properties directly from the ViewModel
                         isPresented = false  // Dismiss the view
                     }
-                    .buttonStyle(CustomButtonStyle())
+                    .buttonStyle(CustomButtonStyle())              
+
                     Spacer()
-                }
+                }               
+            
             }
             .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
             .navigationBarTitle("Add New Habit", displayMode: .inline)
@@ -86,31 +90,49 @@ struct IconPicker: View {
     let icons: [String]
     @Binding var selectedIcon: String
     
+    // Define a dictionary mapping icons to specific colors
+    let iconColors: [String: Color] = [
+            "figure.walk": Color.blue.opacity(0.6),
+            "figure.run": Color.blue.opacity(0.8),
+            "dumbbell.fill": Color.blue.opacity(0.7),
+            "figure.open.water.swim": Color.blue.opacity(0.5),
+            "cloud.fill": Color.blue.opacity(0.3),
+            "snowflake": Color.blue.opacity(0.4),
+            "moon.fill": Color.blue.opacity(0.55),
+            "sun.max.fill": Color.blue.opacity(0.65),
+            "leaf.fill": Color.blue.opacity(0.45),
+            "pawprint.fill": Color.blue.opacity(0.85),
+            "heart.fill": Color.blue.opacity(0.75),
+            "car.fill": Color.blue.opacity(0.9)
+        ]
+    
     var body: some View {
-        Text("Choose Image")
-            .font(.headline)
-            .padding()
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white)
-                .shadow(radius: 5)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 20) {
-                ForEach(icons, id: \.self) { icon in
-                    Image(systemName: icon)
-                        .font(.largeTitle)
-                        .padding()
-                        .background(selectedIcon == icon ? Color.blue : Color.clear)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .onTapGesture {
-                            selectedIcon = icon
-                        }
+            Text("Choose Image")
+                .font(.headline)
+                .padding()
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white)
+                    .shadow(radius: 5)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 20) {
+                    ForEach(icons, id: \.self) { icon in
+                        Image(systemName: icon)
+                            .font(.system(size: 38))
+                            .padding()
+                            .background(selectedIcon == icon ? Color.blue.opacity(0.2) : Color.clear)
+                            .foregroundColor(iconColors[icon, default: .black])  // Use the dictionary for color
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .shadow(radius: 2)
+                            .onTapGesture {
+                                selectedIcon = icon
+                            }
+                    }
                 }
+                .padding(.top, 5)
             }
-            .padding(.top, 5)
+            .padding(.horizontal, 20)
         }
-        .padding(.horizontal, 20)
     }
-}
 
 struct FrequencyPickerView: View {
     @Binding var frequency: String
@@ -144,6 +166,25 @@ struct DayPickerView: View {
             }
             .padding(.horizontal)
         }
+}
+
+struct DayButton: View {
+    @Binding var isSelected: Bool
+    let label: String
+
+    var body: some View {
+        Button(action: {
+            isSelected.toggle()
+        }) {
+            Text(label)
+                .fontWeight(.medium)
+                .foregroundColor(isSelected ? .white : .black)
+                .padding(.vertical, 10)
+                .padding(.horizontal)
+                .background(isSelected ? Color.blue : Color.gray.opacity(0.2))
+                .cornerRadius(15)
+        }
+    }
 }
 
 

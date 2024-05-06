@@ -23,6 +23,8 @@ class HabitViewModel: ObservableObject {
     @Published var dayCompleted: [Date] = []
     @Published var daysSelected: [Bool] = Array(repeating: false, count: 7)
     @Published var selectAllDays: Bool = false  // default all days to false
+    @Published var showAlert = false
+    @Published var alertMessage = ""
     
     private var db = Firestore.firestore()
     private var listener: ListenerRegistration?
