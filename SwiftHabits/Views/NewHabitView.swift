@@ -17,14 +17,13 @@ struct NewHabitView: View {
         "leaf.fill", "pawprint.fill", "heart.fill", "car.fill"
     ]
 
-    
     let frequencyOptions = ["Daily", "Weekly", "Monthly"]
     let days = ["M", "T", "W", "T", "F", "S", "S"]
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                HabitTitel()
+                HabitTitle()
                 
                 // user input for habit name
                 HabitNameInputView(habitName: $viewModel.habitName)
@@ -47,16 +46,17 @@ struct NewHabitView: View {
                 HStack {
                     Spacer()
                     Button("Add Habit") {
-                        viewModel.addHabit()  // Uses properties directly from the ViewModel
-                        isPresented = false  // Dismiss the view
+                        if viewModel.validateAndAddHabit() {
+                            isPresented = false
+                        }
                     }
-                    .buttonStyle(CustomButtonStyle())              
-
+                    .buttonStyle(CustomButtonStyle())
                     Spacer()
-                }               
-            
+                }
             }
-            .background(LinearGradient(gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
+            .alert(isPresented: $viewModel.showAlert) {
+                Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+            }
             .navigationBarTitle("Add New Habit", displayMode: .inline)
             .navigationBarItems(leading: Button(action: {
                 isPresented = false
@@ -67,7 +67,7 @@ struct NewHabitView: View {
     }
 }
 
-struct HabitTitel: View {
+struct HabitTitle: View {
     var body: some View {
         Text("Habit title")
             .font(.headline)

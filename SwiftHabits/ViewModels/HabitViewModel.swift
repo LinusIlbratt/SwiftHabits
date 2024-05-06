@@ -420,4 +420,20 @@ class HabitViewModel: ObservableObject {
         daysSelected = [false, false, false, false, false, false, false]
     }
     
+    func validateAndAddHabit() -> Bool {
+        guard !habitName.isEmpty else {
+            alertMessage = "Please enter a habit name."
+            showAlert = true
+            return false
+        }
+        guard daysSelected.contains(true) else {
+            alertMessage = "Please select at least one day."
+            showAlert = true
+            return false
+        }
+
+        addHabit()  // Call the function to add the habit if validation passes
+        return true
+    }
+    
 }
