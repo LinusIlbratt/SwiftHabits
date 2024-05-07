@@ -408,8 +408,7 @@ class HabitViewModel: ObservableObject {
         
         return missedDaysCount
     }
-    
-    
+        
     
     func resetFields() {
         habitName = ""
@@ -437,3 +436,32 @@ class HabitViewModel: ObservableObject {
     }
     
 }
+
+extension HabitViewModel {
+    func removeHabit(at offsets: IndexSet) {
+        let habitsToRemove = offsets.map { filteredHabits[$0] }
+        filteredHabits.remove(atOffsets: offsets)
+        
+        for habit in habitsToRemove {
+            if let habitId = habit.id {
+                removeHabitFromDatabase(habit: habit, habitId: habitId)
+            }
+        }
+    }
+
+    private func removeHabitFromDatabase(habit: Habit, habitId: String) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        db.collection("users").document(userId).collection("habits").document(habitId).delete { error in
+            if let error = error {
+                print("Error removing habit: \(error)")
+            } else {
+                print("Habit successfully removed from database")
+                // Ta bort alla associerade notifikationer
+                NotificationService.shared.removeNotifications(for: habit.name)
+                // Uppdatera filteredHabits för att synkronisera med databasen
+                self.loadHabits()
+            }
+        }
+    }
+}
+

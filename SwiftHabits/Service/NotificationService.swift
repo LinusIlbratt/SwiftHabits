@@ -64,6 +64,20 @@ class NotificationService {
             }
         }
     
+    func removeNotifications(for habitName: String) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let identifiersToRemove = requests.filter { $0.identifier.contains(habitName) }.map { $0.identifier }
+            
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiersToRemove)
+            
+            if !identifiersToRemove.isEmpty {
+                print("Removed notifications for habit: \(habitName)")
+            } else {
+                print("No notifications found for habit: \(habitName)")
+            }
+        }
+    }
+    
     func removeAllNotifications() {
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         }

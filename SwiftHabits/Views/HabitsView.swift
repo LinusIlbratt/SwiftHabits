@@ -115,6 +115,7 @@ struct HabitListView: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                 }
+                .onDelete(perform: removeHabits)
             }
             .listStyle(PlainListStyle())
             .disabled(!weekdayPickerViewModel.isTodaySelected())
@@ -124,6 +125,10 @@ struct HabitListView: View {
             weekdayPickerViewModel.updateWeekDates()  // Recalculate week dates if necessary
         }
     }
+    
+    private func removeHabits(at offsets: IndexSet) {
+            viewModel.removeHabit(at: offsets)
+        }
 }
 
 
