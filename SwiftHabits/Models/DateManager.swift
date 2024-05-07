@@ -43,27 +43,39 @@ class DateManager {
         dateTimeFormatter.timeZone = TimeZone.current
     }
 
-    func monthMetadata(for baseDate: Date) -> MonthMetadata {
-            let components = calendar.dateComponents([.year, .month], from: baseDate)
-            let startOfMonth = calendar.date(from: components)!
-            let numberOfDays = calendar.range(of: .day, in: .month, for: startOfMonth)!.count
-            return MonthMetadata(firstDay: startOfMonth, numberOfDays: numberOfDays)
+    func monthMetadata(for baseDate: Date) -> MonthMetadata? {
+        let components = calendar.dateComponents([.year, .month], from: baseDate)
+        guard let startOfMonth = calendar.date(from: components),
+              let range = calendar.range(of: .day, in: .month, for: startOfMonth) else {
+            return nil
         }
+        return MonthMetadata(firstDay: startOfMonth, numberOfDays: range.count)
+    }
+
 
     func changeMonth(for date: Date, by months: Int) -> Date {
             return calendar.date(byAdding: .month, value: months, to: date) ?? date
         }
 
     func weekDates(startingFrom startDate: Date) -> [String] {
+        // Calculate the weekday index, adjusting so Monday is index 0
         let weekday = calendar.component(.weekday, from: startDate)
-        guard let startOfWeek = calendar.date(byAdding: .day, value: -((weekday + 5) % 7), to: startDate) else {
-            return []
+        let adjustment = (weekday + 5) % 7 // Adjust such that Monday is 0 (considering Sunday is 1 by default)
+
+        // Calculate the start of the week based on the adjustment
+        guard let startOfWeek = calendar.date(byAdding: .day, value: -adjustment, to: startDate) else {
+            return [] // Return an empty array if the start of the week cannot be determined
         }
-        return (0..<7).map { offset in
-            let dateToAdd = calendar.date(byAdding: .day, value: offset, to: startOfWeek)!
-            return dateFormatter.string(from: dateToAdd)
+
+        // Generate dates for the whole week from the startOfWeek
+        return (0..<7).compactMap { offset in
+            guard let dateToAdd = calendar.date(byAdding: .day, value: offset, to: startOfWeek) else {
+                return nil // Safely handle any nil dates
+            }
+            return dateFormatter.string(from: dateToAdd) // Format each date into a string
         }
     }
+
 
     func getDayIndex(for date: Date) -> Int {
         if let forcedIndex = forcedDayIndex {
