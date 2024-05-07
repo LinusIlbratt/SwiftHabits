@@ -33,6 +33,8 @@ class HabitViewModel: ObservableObject {
         Auth.auth().currentUser?.uid
     }
     
+    var habitService = HabitService()
+    
     init() {
         loadHabits()
     }
@@ -43,32 +45,29 @@ class HabitViewModel: ObservableObject {
     
     
     func loadHabits() {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            print("Error: User is not logged in")
-            return
-        }
-        
-        let userHabitsPath = db.collection("users").document(userId).collection("habits")
-        
-        userHabitsPath.getDocuments { snapshot, error in
-            if let error = error {
-                print("Error getting documents: \(error)")
+            guard let userId = Auth.auth().currentUser?.uid else {
+                print("Error: User is not logged in")
                 return
-            }
-            guard let documents = snapshot?.documents else {
-                print("No documents found")
-                return
-            }
-            self.habits = documents.compactMap { document -> Habit? in
-                try? document.data(as: Habit.self)
             }
             
-            self.checkForDayChange()
-            self.updateFilteredHabits() // Ensure to filter the habits after loading
-            self.calculateMissedDaysForAllHabits()
-            NotificationService.shared.printActiveReminders()
+            habitService.loadHabits(for: userId) { [weak self] (habits, error) in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("Error getting habits: \(error)")
+                    return
+                }
+                guard let habits = habits else { return }
+
+                DispatchQueue.main.async {
+                    self.habits = habits
+                    self.checkForDayChange()
+                    self.updateFilteredHabits()
+                    self.calculateMissedDaysForAllHabits()
+                    NotificationService.shared.printActiveReminders()
+                }
+            }
         }
-    }
     
     func calculateMissedDaysForAllHabits() {
         let currentDate = Date()
