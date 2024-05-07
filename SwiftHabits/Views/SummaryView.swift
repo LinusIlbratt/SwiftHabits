@@ -30,7 +30,7 @@ struct SummaryView: View {
 
 struct CalendarView: View {
     @ObservedObject var viewModel: CalendarViewModel
-    var dayCompleted: [Date]  // Now properly passed from SummaryView
+    var dayCompleted: [Date]  
 
     var body: some View {
         VStack {
@@ -104,9 +104,9 @@ struct DayCell: View {
             Text("\(Calendar.current.component(.day, from: date))")
                 .frame(width: 40, height: 40)
                 .background(isActive ? Color.blue.opacity(0.3) : Color.clear)
-                .cornerRadius(10) // Apply rounded corners directly to the background
+                .cornerRadius(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10) // Apply rounded rectangle overlay
+                    RoundedRectangle(cornerRadius: 10)
                         .stroke(Color.gray, lineWidth: 0.1)
                 )
         }
@@ -128,7 +128,7 @@ struct HabitSummaryView: View {
             .padding()
 
             if !viewModelHabit.habits.isEmpty {
-                // Ensure that the dayCompleted data from the correct habit is passed
+                
                 HStack {
                     DaysDoneInMonthView(viewModel: viewModelCalendar, dayCompleted: viewModelHabit.habits[selectedSegment].dayCompleted)
                     TotalCompletionsView(totalCompletions: viewModelHabit.habits[selectedSegment].totalCompletions)
@@ -148,14 +148,14 @@ struct DaysDoneInMonthView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            // Compute the count of dates in the current month
+            
             let daysCompletedInMonth = dayCompleted.filter { date in
                 let monthYearFormatter = DateFormatter()
                 monthYearFormatter.dateFormat = "yyyy MM"
                 return monthYearFormatter.string(from: date) == monthYearFormatter.string(from: viewModel.currentMonth)
             }.count
             
-            // Display the count and the month name
+            
             VStack {
                 Text("Days done in \(viewModel.currentMonth, formatter: viewModel.monthOnlyFormatter)")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
@@ -228,7 +228,7 @@ struct StreakCountView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            VStack(spacing: 4) { // Reduced spacing between the texts
+            VStack(spacing: 4) {
                 Text("Current streak")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
                     .foregroundColor(.blue.opacity(0.4))
@@ -237,7 +237,7 @@ struct StreakCountView: View {
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .foregroundColor(.blue.opacity(0.8))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // Apply frame to contain the entire VStack
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
                 LinearGradient(
                     gradient: Gradient(colors: [Color.white.opacity(0.7), Color.white]),
@@ -254,7 +254,6 @@ struct StreakCountView: View {
                 .scaledToFit()
                 .frame(width: 40, height: 40)
                 .foregroundColor(.red)
-               // .offset(y:)
         }
     }
 }
