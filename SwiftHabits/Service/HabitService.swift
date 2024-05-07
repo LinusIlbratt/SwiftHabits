@@ -33,4 +33,77 @@ class HabitService {
             completion(habits, nil)
         }
     }
+    
+    func addHabit(habit: Habit, userId: String, completion: @escaping (Bool) -> Void) {
+        guard let habitId = habit.id else {
+            print("Habit ID is nil")
+            completion(false)
+            return
+        }
+        
+        let userHabitPath = db.collection("users").document(userId).collection("habits").document(habitId)
+        do {
+            try userHabitPath.setData(from: habit) { error in
+                completion(error == nil)
+            }
+        } catch {
+            print("Error serializing habit: \(error)")
+            completion(false)
+        }
+    }
+
+    func updateHabit(habit: Habit, userId: String, completion: @escaping (Bool) -> Void) {
+        guard let habitId = habit.id else {
+            print("Habit ID is nil")
+            completion(false)
+            return
+        }
+        
+        let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+        habitRef.updateData([
+            "streakCount": habit.streakCount,
+            "progress": habit.progress,
+            "totalCompletions": habit.totalCompletions,
+            "totalAttempts": habit.totalAttempts,
+            "longestStreak": habit.longestStreak,
+            "dayCompleted": habit.dayCompleted.map { Timestamp(date: $0) },
+            "isDone": habit.isDone
+        ]) { error in
+            completion(error == nil)
+        }
+    }
+    
+    func updateCompletedHabit(userId: String, habitId: String, habit: Habit, completion: @escaping (Bool) -> Void) {
+        let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+        let updateData: [String: Any] = [
+            "streakCount": habit.streakCount,
+            "progress": habit.progress,
+            "totalCompletions": habit.totalCompletions,
+            "totalAttempts": habit.totalAttempts,
+            "longestStreak": habit.longestStreak,
+            "dayCompleted": habit.dayCompleted.map { Timestamp(date: $0) },  // Ensure correct date conversion
+            "isDone": habit.isDone
+        ]
+        habitRef.updateData(updateData) { error in
+            completion(error == nil)
+        }
+    }
+
+
+    
+    func updateStreakCount(for habit: Habit, userId: String, completion: ((Error?) -> Void)?) {
+            guard let habitId = habit.id else { return }
+            let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+            habitRef.updateData(["streakCount": habit.streakCount]) { error in
+                completion?(error)
+            }
+        }
+
+        func updateTotalAttempts(for habit: Habit, userId: String, completion: ((Error?) -> Void)?) {
+            guard let habitId = habit.id else { return }
+            let userHabitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+            userHabitRef.updateData(["totalAttempts": habit.totalAttempts]) { error in
+                completion?(error)
+            }
+        }
 }
