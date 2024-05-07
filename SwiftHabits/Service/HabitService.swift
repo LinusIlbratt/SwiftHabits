@@ -88,7 +88,56 @@ class HabitService {
             completion(error == nil)
         }
     }
+    
+    func updateTotalAttemptsForHabit(userId: String, habitId: String, attempts: Int, completion: @escaping (Bool) -> Void) {
+            let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+            habitRef.updateData(["totalAttempts": attempts]) { error in
+                if let error = error {
+                    print("Error updating total attempts: \(error)")
+                    completion(false)
+                } else {
+                    print("Total attempts successfully updated for Habit ID: \(habitId)")
+                    completion(true)
+                }
+            }
+        }
 
+    
+    func resetHabitProgress(userId: String, habit: Habit, completion: @escaping (Bool) -> Void) {
+            guard let habitId = habit.id else {
+                completion(false)
+                return
+            }
+            let userHabitRef = db.collection("users").document(userId).collection("habits").document(habitId)
+            userHabitRef.updateData([
+                "isDone": habit.isDone,
+                "progress": habit.progress
+            ]) { error in
+                if let error = error {
+                    print("Error updating habit: \(error)")
+                    completion(false)
+                } else {
+                    print("Habit successfully updated with reset values for habit ID: \(habitId)")
+                    completion(true)
+                }
+            }
+        }
+    
+    func removeHabitFromDatabase(userId: String?, habit: Habit, habitId: String, completion: @escaping (Bool) -> Void) {
+            guard let userId = userId else {
+                completion(false)
+                return
+            }
+            db.collection("users").document(userId).collection("habits").document(habitId).delete { error in
+                if let error = error {
+                    print("Error removing habit: \(error)")
+                    completion(false)
+                } else {
+                    NotificationService.shared.removeNotifications(for: habit.name)
+                    completion(true)
+                }
+            }
+        }
 
     
     func updateStreakCount(for habit: Habit, userId: String, completion: ((Error?) -> Void)?) {

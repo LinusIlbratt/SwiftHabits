@@ -24,5 +24,9 @@ struct Habit: Identifiable, Codable {
     var dayCompleted: [Date] = []
     var dayCreated: String
     var isDone: Bool = false // done
+    
+    func isActiveDay(_ weekdayIndex: Int) -> Bool {
+            return daysActive.indices.contains(weekdayIndex) && daysActive[weekdayIndex]
+        }
 }
 

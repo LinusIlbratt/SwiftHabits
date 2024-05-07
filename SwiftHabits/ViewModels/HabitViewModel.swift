@@ -104,24 +104,32 @@ class HabitViewModel: ObservableObject {
         }
     
     func calculateMissedDaysForAllHabits() {
-        let currentDate = Date()
+        let calendar = Calendar.current
+        let currentDate = calendar.startOfDay(for: Date())
+
         for index in habits.indices {
             guard let lastCompletionDate = habits[index].dayCompleted.last else { continue }
-            
-            let missedDays = calculateMissedActiveDays(for: habits[index], until: currentDate)
-            print("Missed active days for habit \(habits[index].name): \(missedDays)")
-            
+            let lastDate = calendar.startOfDay(for: lastCompletionDate)
+
+            var currentDateIter = calendar.date(byAdding: .day, value: -1, to: currentDate)!
+            var missedDays = 0
+
+            while currentDateIter > lastDate {
+                let weekdayIndex = calendar.component(.weekday, from: currentDateIter) - 1  // Adjust to 0-based index, Monday = 0
+
+                if habits[index].isActiveDay(weekdayIndex) {
+                    missedDays += 1
+                }
+
+                currentDateIter = calendar.date(byAdding: .day, value: -1, to: currentDateIter)!
+            }
+
             if missedDays > 0 {
-                // Reset the streak count if there are missed days
                 habits[index].streakCount = 0
                 updateStreakCount(habit: habits[index])
+                habits[index].totalAttempts += missedDays
+                updateTotalAttempts(habit: habits[index])
             }
-            
-            // Update total attempts
-            habits[index].totalAttempts += missedDays
-            
-            // Update Firestore for total attempts
-            updateTotalAttempts(habit: habits[index])
         }
     }
     
@@ -226,32 +234,12 @@ class HabitViewModel: ObservableObject {
         }
 
         habits[index] = habit  // Update the array to reflect the change
-
-        // Delegera uppdateringen av Firestore till HabitService
+        
         habitService.updateCompletedHabit(userId: userId, habitId: habitId, habit: habit) { success in
             if success {
                 print("Habit successfully updated for habit ID: \(habitId)")
             } else {
                 print("Failed to update habit in Firestore.")
-            }
-        }
-    }
-    
-    func updateCompletedHabitToFirestore(userId: String, habitId: String, habit: Habit) {
-        let habitRef = db.collection("users").document(userId).collection("habits").document(habitId)
-        habitRef.updateData([
-            "streakCount": habit.streakCount,
-            "progress": habit.progress,
-            "totalCompletions": habit.totalCompletions,
-            "totalAttempts": habit.totalAttempts,
-            "longestStreak": habit.longestStreak,
-            "dayCompleted": habit.dayCompleted.map { Timestamp(date: $0) },  // Ensure correct date conversion
-            "isDone": habit.isDone
-        ]) { error in
-            if let error = error {
-                print("Error updating habit: \(error)")
-            } else {
-                print("Habit successfully updated for habit ID: \(habitId)")
             }
         }
     }
@@ -264,8 +252,6 @@ class HabitViewModel: ObservableObject {
     
     func getLastKnownDay() -> Date? {
         return UserDefaults.standard.object(forKey: "lastKnownDay") as? Date
-        // let calendar = Calendar.current
-        // return calendar.date(from: DateComponents(year: 2024, month: 4, day: 28))
     }
     
     func checkForDayChange() {
@@ -291,7 +277,6 @@ class HabitViewModel: ObservableObject {
     
     
     func resetIsDoneAndProgressForAllHabits() {
-        print("this is running")
         print("Number of habits to reset: \(habits.count)")
         for index in habits.indices {
             var habit = habits[index]
@@ -299,30 +284,23 @@ class HabitViewModel: ObservableObject {
             habit.isDone = false
             habit.progress = 0
             habits[index] = habit
-            updateHabitResetToFirestore(habit)
+            resetHabitProgress(habit: habit)
         }
     }
     
     
     
-    func updateHabitResetToFirestore(_ habit: Habit) {
+    func resetHabitProgress(habit: Habit) {
         guard let userId = Auth.auth().currentUser?.uid else {
-            print("Error: User is not logged in")
+            print("User not logged in")
             return
         }
-        guard let habitId = habit.id else {
-            print("Error: Habit ID is nil")
-            return
-        }
-        let userHabitRef = Firestore.firestore().collection("users").document(userId).collection("habits").document(habitId)
-        userHabitRef.updateData([
-            "isDone": habit.isDone,
-            "progress": habit.progress
-        ]) { error in
-            if let error = error {
-                print("Error updating habit: \(error)")
+
+        habitService.resetHabitProgress(userId: userId, habit: habit) { success in
+            if success {
+                print("Habit progress reset successfully for habit ID: \(habit.id ?? "unknown ID")")
             } else {
-                print("Habit successfully updated with reset values for habit ID: \(habitId)")
+                print("Failed to reset habit progress.")
             }
         }
     }
@@ -343,25 +321,19 @@ class HabitViewModel: ObservableObject {
                 continue
             }
             
-            // check if today is an active day for the habit
             if habit.daysActive.indices.contains(todayIndex) && habit.daysActive[todayIndex] {
-                // increase total attempts only if it's an active day
                 habit.totalAttempts += 1
-                // update to Firestore using the user-specific path
-                
-                let userHabitRef = Firestore.firestore().collection("users").document(userId).collection("habits").document(habitId)
-                userHabitRef.updateData([
-                    "totalAttempts": habit.totalAttempts
-                ]) { error in
-                    if let error = error {
-                        print("Error updating total attempts for Habit ID: \(habitId): \(error)")
+                habitService.updateTotalAttemptsForHabit(userId: userId, habitId: habitId, attempts: habit.totalAttempts) { success in
+                    if success {
+                        print("Updated total attempts for \(habit.name)")
                     } else {
-                        print("Total attempts successfully updated for Habit ID: \(habitId)")
+                        print("Failed to update total attempts for \(habit.name)")
                     }
                 }
             }
         }
     }
+
     
     
     func calculateMissedActiveDays(for habit: Habit, until currentDate: Date) -> Int {
@@ -427,30 +399,24 @@ class HabitViewModel: ObservableObject {
 }
 
 extension HabitViewModel {
+    
     func removeHabit(at offsets: IndexSet) {
-        let habitsToRemove = offsets.map { filteredHabits[$0] }
-        filteredHabits.remove(atOffsets: offsets)
-        
-        for habit in habitsToRemove {
-            if let habitId = habit.id {
-                removeHabitFromDatabase(habit: habit, habitId: habitId)
+            let habitsToRemove = offsets.map { filteredHabits[$0] }
+            filteredHabits.remove(atOffsets: offsets)
+            
+            for habit in habitsToRemove {
+                if let habitId = habit.id {
+                    habitService.removeHabitFromDatabase(userId: Auth.auth().currentUser?.uid, habit: habit, habitId: habitId) { success in
+                        if success {
+                            print("Habit successfully removed from database")
+                            self.loadHabits()
+                        } else {
+                            print("Error removing habit")
+                        }
+                    }
+                }
             }
-        }
-    }
-
-    private func removeHabitFromDatabase(habit: Habit, habitId: String) {
-        guard let userId = Auth.auth().currentUser?.uid else { return }
-        db.collection("users").document(userId).collection("habits").document(habitId).delete { error in
-            if let error = error {
-                print("Error removing habit: \(error)")
-            } else {
-                print("Habit successfully removed from database")
-                // Ta bort alla associerade notifikationer
-                NotificationService.shared.removeNotifications(for: habit.name)
-                // Uppdatera filteredHabits för att synkronisera med databasen
-                self.loadHabits()
-            }
-        }
-    }
+        }   
+    
 }
 
