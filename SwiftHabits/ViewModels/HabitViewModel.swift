@@ -233,6 +233,7 @@ class HabitViewModel: ObservableObject {
         
         // Update habit
         habit.totalCompletions += 1
+        habit.totalAttempts += 1
         habit.streakCount += 1
         habit.isDone = true
         habit.progress = 1
@@ -255,6 +256,7 @@ class HabitViewModel: ObservableObject {
             "streakCount": habit.streakCount,
             "progress": habit.progress,
             "totalCompletions": habit.totalCompletions,
+            "totalAttempts": habit.totalAttempts,
             "longestStreak": habit.longestStreak,
             "dayCompleted": habit.dayCompleted.map { Timestamp(date: $0) },  // Ensure correct date conversion
             "isDone": habit.isDone
