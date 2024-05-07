@@ -38,9 +38,10 @@ class CalendarViewModel: ObservableObject {
         currentMonth = dateManager.changeMonth(for: currentMonth, by: -1)
     }
 
-    func monthMetadata() -> MonthMetadata {
+    func monthMetadata() -> MonthMetadata? {
         return dateManager.monthMetadata(for: currentMonth)
     }
+
 
     var weekdays: [String] {
         var days = dateManager.calendar.shortWeekdaySymbols  // Adjusted to the correct locale setting
@@ -49,12 +50,16 @@ class CalendarViewModel: ObservableObject {
         return days
     }
 
-    func firstDayOfWeekday() -> Int {
-        let metadata = monthMetadata()
+    func firstDayOfWeekday() -> Int? {  // Now returns an optional Int
+        guard let metadata = monthMetadata() else {
+            return nil  // Return nil if metadata is not available
+        }
+
         var firstDayWeekday = dateManager.calendar.component(.weekday, from: metadata.firstDay)
-        firstDayWeekday = (firstDayWeekday + 5) % 7  // Adjusting so Monday is 0
+        firstDayWeekday = (firstDayWeekday + 5) % 7  // Adjust so Monday is 0
         return firstDayWeekday
     }
+
 }
 
 
