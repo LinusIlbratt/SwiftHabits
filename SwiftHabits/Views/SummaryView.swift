@@ -63,38 +63,40 @@ struct MonthView: View {
     var dayCompleted: [Date]
 
     var body: some View {
-        let metadata = viewModel.monthMetadata()
-        let firstDayWeekday = viewModel.firstDayOfWeekday()
-        let weekdays = viewModel.weekdays
-        let firstDayOfMonth = metadata.firstDay 
-
-        return VStack {
+        VStack {
             // Weekday headers
             HStack {
-                ForEach(weekdays, id: \.self) { weekday in
+                ForEach(viewModel.weekdays, id: \.self) { weekday in
                     Text(weekday)
                         .frame(maxWidth: .infinity)
                         .font(.caption)
                 }
             }
 
-            // Day grid
-            LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-                ForEach(0..<42, id: \.self) { index in
-                    if index < firstDayWeekday || index >= firstDayWeekday + metadata.numberOfDays {
-                        Text("")
-                            .frame(width: 40, height: 40)
-                    } else {
-                        let dayOffset = index - firstDayWeekday
-                        let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: firstDayOfMonth)!
-
-                        DayCell(date: date, isActive: dayCompleted.contains { Calendar.current.isDate($0, inSameDayAs: date) })
+            // Use optional binding to safely unwrap `MonthMetadata`
+            if let metadata = viewModel.monthMetadata(), let firstDayWeekday = viewModel.firstDayOfWeekday() {
+                // Day grid
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
+                    ForEach(0..<42, id: \.self) { index in
+                        if index < firstDayWeekday || index >= firstDayWeekday + metadata.numberOfDays {
+                            Text("")
+                                .frame(width: 40, height: 40)
+                        } else {
+                            let dayOffset = index - firstDayWeekday
+                            if let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: metadata.firstDay) {
+                                DayCell(date: date, isActive: dayCompleted.contains { Calendar.current.isDate($0, inSameDayAs: date) })
+                            }
+                        }
                     }
                 }
+            } else {
+                // Fallback content in case metadata isn't available
+                Text("No data available")
             }
         }
     }
 }
+
 
 struct DayCell: View {
     var date: Date
