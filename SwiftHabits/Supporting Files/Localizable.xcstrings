@@ -5,10 +5,24 @@
 
     },
     "%@" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "%lld" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "%lld of %lld completed" : {
       "localizations" : {
@@ -16,6 +30,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld of %2$lld completed"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld av %2$lld avklarade"
           }
         }
       }
@@ -87,7 +107,14 @@
       }
     },
     "Best streak" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bästa streak"
+          }
+        }
+      }
     },
     "Choose Image" : {
       "localizations" : {
@@ -100,19 +127,54 @@
       }
     },
     "Choose Time" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj tid"
+          }
+        }
+      }
     },
     "Current streak" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuvarande streak"
+          }
+        }
+      }
     },
     "Daily Goals" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagens mål"
+          }
+        }
+      }
     },
     "Days done in %@" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagar avklarade i %@"
+          }
+        }
+      }
     },
     "Email" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-post"
+          }
+        }
+      }
     },
     "Enter habit name" : {
       "localizations" : {
@@ -125,7 +187,14 @@
       }
     },
     "Error" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
     },
     "Every day" : {
       "localizations" : {
@@ -186,10 +255,24 @@
       }
     },
     "Hour" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timma"
+          }
+        }
+      }
     },
     "Minute" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minut"
+          }
+        }
+      }
     },
     "Mon" : {
       "extractionState" : "manual",
@@ -212,7 +295,14 @@
 
     },
     "Password" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösenord"
+          }
+        }
+      }
     },
     "Progress" : {
       "localizations" : {
@@ -235,7 +325,14 @@
       }
     },
     "Reminder at" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Påminnelse vid"
+          }
+        }
+      }
     },
     "Repeat" : {
       "localizations" : {
@@ -276,13 +373,34 @@
       }
     },
     "Set reminder" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sätt påminnelse"
+          }
+        }
+      }
     },
     "Sign In" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in"
+          }
+        }
+      }
     },
     "Sign Up" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signera konto"
+          }
+        }
+      }
     },
     "Sun" : {
       "extractionState" : "manual",
@@ -339,7 +457,14 @@
       }
     },
     "Total days done" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totala dagar avklarade"
+          }
+        }
+      }
     },
     "Tues" : {
       "extractionState" : "manual",
